@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Aprenda como calcular preço de impressão 3D considerando material do slicer, energia, desgaste, mão de obra, perdas, taxas e margem.">
+    <meta name="theme-color" content="#f6f8f4">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Como calcular preço de impressão 3D">
+    <meta property="og:description" content="Guia prático para precificar impressão 3D considerando consumo do slicer, energia, desgaste, mão de obra, perdas, taxas e margem.">
+    <meta property="og:site_name" content="Cotar3D">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Como calcular preço de impressão 3D | Cotar3D</title>
+    <link rel="canonical" href="https://cotar3d.app/como-calcular-preco-impressao-3d.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./index.html" aria-label="Cotar3D início">
+        <span class="brand-mark" aria-hidden="true">C3D</span>
+        <span>Cotar3D</span>
+      </a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="./index.html#calculadora">Calcular</a>
+        <a href="./politica-de-privacidade.html">Privacidade</a>
+        <a href="./termos-de-uso.html">Termos</a>
+      </nav>
+    </header>
+
+    <main class="simple-page">
+      <section class="page-hero guide-hero">
+        <p class="eyebrow">Guia de precificação</p>
+        <h1>Como calcular preço de impressão 3D sem vender no prejuízo</h1>
+        <p>O erro mais comum é cobrar só pelo peso da peça. Uma cotação confiável considera o consumo total do slicer, tempo de máquina, energia, perdas, mão de obra, embalagem, taxas e margem.</p>
+        <a class="button primary" href="./index.html#calculadora">Usar a calculadora</a>
+      </section>
+
+      <article class="legal-card guide-card">
+        <h2>1. Comece pelo material consumido pelo slicer</h2>
+        <p>Use o peso total exibido no Bambu Studio, Orca, PrusaSlicer, Cura ou outro fatiador. Esse total pode incluir peça, suportes, torre de purga, purga, brim, raft e outros resíduos necessários para imprimir.</p>
+        <p><strong>Fórmula:</strong> material = consumo em gramas / 1000 × preço do kg.</p>
+
+        <h2>2. Some energia elétrica</h2>
+        <p>A energia depende do consumo médio da impressora, do tempo de impressão e da tarifa local.</p>
+        <p><strong>Fórmula:</strong> energia = potência média em W / 1000 × horas × R$/kWh.</p>
+
+        <h2>3. Inclua desgaste da impressora</h2>
+        <p>A impressora ocupa espaço, sofre desgaste e limita sua capacidade produtiva. Mesmo que o valor seja estimado, incluir um custo por hora ajuda a evitar preço baixo demais.</p>
+
+        <h2>4. Não esqueça mão de obra e acabamento</h2>
+        <p>Preparar arquivo, retirar suporte, limpar, lixar, embalar e conversar com o cliente também tem custo. Para peças simples, esse valor pode ser baixo. Para encomendas personalizadas, ele pode ser decisivo.</p>
+
+        <h2>5. Reserve uma taxa de falha</h2>
+        <p>Impressão 3D tem erro, retrabalho e desperdício. Uma reserva de falha ajuda a diluir perdas ao longo dos pedidos.</p>
+
+        <h2>6. Aplique taxas e margem na ordem certa</h2>
+        <p>Taxas e impostos devem aparecer de forma transparente. A margem precisa ser aplicada depois que os custos reais estão definidos, para que o lucro não seja confundido com faturamento.</p>
+
+        <h2>Resumo da fórmula</h2>
+        <p><strong>Custo real</strong> = material + energia + desgaste + mão de obra + embalagem + frete + reserva de falha.</p>
+        <p><strong>Preço sugerido</strong> = custo real com margem e taxas informadas.</p>
+
+        <h2>Quando revisar o preço</h2>
+        <p>Revise sua cotação sempre que mudar preço do filamento, tarifa de energia, tempo de impressão, taxa de falha, material, máquina ou forma de venda.</p>
+
+        <h2>Perguntas frequentes</h2>
+        <h3>Devo usar o peso da peça pronta ou o consumo do slicer?</h3>
+        <p>Use o consumo total do slicer para calcular custo. O peso da peça pronta pode ajudar a entender perda técnica, mas não representa tudo que você pagou para imprimir.</p>
+        <h3>Posso cobrar só por grama?</h3>
+        <p>É simples, mas costuma esconder energia, desgaste, mão de obra, falhas, embalagem e tempo de máquina. O preço por grama pode ser uma referência, não a conta completa.</p>
+        <h3>Qual margem usar?</h3>
+        <p>Depende do tipo de peça, urgência, acabamento, complexidade e canal de venda. Como ponto inicial, teste margens entre 30% e 65% e acompanhe lucro por hora.</p>
+      </article>
+    </main>
+
+    <footer>
+      <strong>Cotar3D</strong>
+      <span>Use o consumo do slicer como ponto de partida.</span>
+      <nav class="footer-links" aria-label="Links legais">
+        <a href="./index.html">Início</a>
+        <a href="./politica-de-privacidade.html">Privacidade</a>
+        <a href="./termos-de-uso.html">Termos</a>
+      </nav>
+    </footer>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Como calcular preço de impressão 3D",
+        "description": "Guia prático para precificar impressão 3D considerando consumo do slicer, energia, desgaste, mão de obra, perdas, taxas e margem.",
+        "author": {
+          "@type": "Organization",
+          "name": "Cotar3D"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Cotar3D"
+        }
+      }
+    </script>
+  </body>
+</html>
