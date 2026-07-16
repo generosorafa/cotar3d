@@ -16,25 +16,24 @@ Calculadora gratuita de custo, margem e preço de venda para impressão 3D.
 ## Publicar no Firebase Hosting
 
 1. Crie um projeto no Firebase Console.
-2. Copie `.firebaserc.example` para `.firebaserc`.
-3. Troque `SEU_ID_DO_PROJETO_FIREBASE` pelo ID real do projeto.
-4. Instale ou use o Firebase CLI.
-5. Faça login:
+2. O projeto já está configurado para o ID `cotar3d`.
+3. Instale ou use o Firebase CLI.
+4. Faça login:
 
 ```bash
 firebase login
 ```
 
-6. Publique a partir desta pasta:
+5. Publique a partir desta pasta:
 
 ```bash
-firebase deploy --only hosting
+firebase deploy --only hosting --project cotar3d
 ```
 
 O Firebase deve gerar URLs parecidas com:
 
-- `https://SEU_ID_DO_PROJETO_FIREBASE.web.app`
-- `https://SEU_ID_DO_PROJETO_FIREBASE.firebaseapp.com`
+- `https://cotar3d.web.app`
+- `https://cotar3d.firebaseapp.com`
 
 ## GitHub
 
@@ -55,7 +54,7 @@ git push -u origin main
 
 ## Antes de publicar oficialmente
 
-- Atualizar URLs canônicas em `index.html`, `sitemap.xml`, `robots.txt` e páginas internas.
+- Conferir URLs canônicas em `index.html`, `sitemap.xml`, `robots.txt` e páginas internas sempre que trocar de domínio.
 - Revisar política de privacidade e termos antes de usar analytics, anúncios, login ou pagamentos.
 - Testar em celular real.
 - Validar fórmula com usuários que imprimem em 3D.
