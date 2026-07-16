@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cotar3D calcula custo real, lucro e preco de venda para impressao 3D usando o consumo total do slicer.">
+    <meta name="theme-color" content="#f6f8f4">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Cotar3D | Precifique impressão 3D sem vender no prejuízo">
+    <meta property="og:description" content="Calculadora gratuita para estimar custo real, preço sugerido, lucro líquido e lucro por hora em impressões 3D.">
+    <meta property="og:site_name" content="Cotar3D">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cotar3D | Precifique impressão 3D sem vender no prejuízo">
+    <meta name="twitter:description" content="Use o consumo total do slicer, energia, desgaste, perdas, taxas e margem para calcular quanto cobrar.">
+    <title>Cotar3D | Precifique impressao 3D sem vender no prejuizo</title>
+    <link rel="canonical" href="https://cotar3d.app/">
+    <link rel="manifest" href="./site.webmanifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Cotar3D inicio">
+        <span class="brand-mark" aria-hidden="true">C3D</span>
+        <span>Cotar3D</span>
+      </a>
+      <nav class="nav" aria-label="Navegacao principal">
+        <a href="#calculadora">Calcular</a>
+        <a href="./como-calcular-preco-impressao-3d.html">Guia</a>
+        <a href="#metodo">Metodo</a>
+        <a href="#pro">Pro</a>
+      </nav>
+    </header>
+
+    <main id="inicio">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Calculadora gratuita para makers e vendedores</p>
+          <h1>Transforme horas de impressão em preço justo.</h1>
+          <p class="hero-text">O Cotar3D organiza material, energia, máquina, perdas e margem em uma cotação clara. Você entende o custo antes de prometer preço para o cliente.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#calculadora">Calcular agora</a>
+            <a class="button secondary" href="#problema">Ver onde o prejuízo aparece</a>
+          </div>
+          <div class="trust-row" aria-label="Destaques do MVP">
+          <span>MVP sem login</span>
+          <span>Dados no seu navegador</span>
+          <span>Bambu Lab + personalizado</span>
+          </div>
+        </div>
+
+        <aside class="quote-preview" aria-label="Exemplo de resultado Cotar3D">
+          <div class="preview-top">
+            <span>Cotar3D · ficha rápida</span>
+            <strong>Orçamento rápido</strong>
+          </div>
+          <p class="example-label">EXEMPLO · VENDA DIRETA · PLA</p>
+          <div class="price-line">
+            <span>🏷 Preço sugerido</span>
+            <strong>R$ 58,40</strong>
+            <small>45% de margem desejada</small>
+          </div>
+          <div class="cascade">
+            <div><span>Material total do slicer</span><b>- R$ 8,08</b></div>
+            <div><span>Energia elétrica</span><b>- R$ 0,90</b></div>
+            <div><span>Máquina + desgaste</span><b>- R$ 7,80</b></div>
+            <div><span>Embalagem e insumos</span><b>- R$ 5,50</b></div>
+            <div><span>Reserva de falha</span><b>- R$ 1,78</b></div>
+          </div>
+          <div class="profit-box">
+            <span>Lucro estimado</span>
+            <strong>R$ 34,34</strong>
+            <em>R$ 5,28 por hora de impressora</em>
+          </div>
+        </aside>
+      </section>
+
+      <section class="problem-band" id="problema">
+        <div class="section-kicker">
+          <p class="eyebrow">Visão de custo</p>
+          <h2>Da bobina ao lucro: cada etapa aparece antes da venda.</h2>
+        </div>
+        <div class="feature-showcase">
+          <div class="feature-copy">
+            <p class="eyebrow">Detalhamento cascata</p>
+            <h3>Uma ficha de cotação para decidir com calma, não no impulso</h3>
+            <p>O foco é reduzir erro: o consumo vem do slicer, os custos operacionais entram separados e a margem aparece sem esconder o custo real.</p>
+            <span class="status-pill">Versão inicial · custo zero para operar</span>
+          </div>
+          <div class="cascade-card" aria-label="Exemplo de detalhamento em cascata">
+            <p>EXEMPLO · BAMBU P1S · PLA</p>
+            <div class="cascade-head">
+              <span>Preço sugerido</span>
+              <strong>R$ 58,40</strong>
+            </div>
+            <div class="stack-lines">
+              <div><i class="dot amber"></i><span>Material consumido pelo slicer</span><b>- R$ 8,08</b></div>
+              <div><i class="dot blue"></i><span>Energia elétrica</span><b>- R$ 0,90</b></div>
+              <div><i class="dot purple"></i><span>Desgaste da impressora</span><b>- R$ 7,80</b></div>
+              <div><i class="dot pink"></i><span>Embalagem e insumos</span><b>- R$ 5,50</b></div>
+              <div><i class="dot red"></i><span>Reserva de falha</span><b>- R$ 1,78</b></div>
+            </div>
+            <div class="liquid-profit">
+              <span>Lucro líquido</span>
+              <strong>R$ 34,34</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="calculator-shell" id="calculadora">
+        <form class="calculator" id="quoteForm">
+          <div class="section-heading">
+            <p class="eyebrow">Calculadora</p>
+            <h2>Faça uma cotação em menos de 1 minuto</h2>
+            <p>Comece com quatro dados. Abra o modo completo quando quiser incluir mão de obra, frete, taxas e perdas.</p>
+          </div>
+
+          <fieldset>
+            <legend>Dados principais</legend>
+            <div class="field-grid">
+              <label>
+                Nome da peça
+                <input name="jobName" type="text" value="Suporte personalizado" autocomplete="off">
+              </label>
+              <label>
+                Material
+                <select name="material">
+                  <option value="PLA" data-price="95">PLA</option>
+                  <option value="PETG" data-price="115">PETG</option>
+                  <option value="ABS" data-price="110">ABS</option>
+                  <option value="ASA" data-price="135">ASA</option>
+                  <option value="TPU" data-price="160">TPU</option>
+                  <option value="Resina" data-price="180">Resina</option>
+                  <option value="Outro" data-price="0">Outro</option>
+                </select>
+              </label>
+              <label class="wide-field">
+                Material consumido pelo slicer (g)
+                <input name="consumedGrams" type="number" min="0" step="0.1" value="85">
+                <span class="hint">Use o total exibido no Bambu Studio, Orca, PrusaSlicer ou Cura. Inclui peça, suporte, torre, purga, brim e raft.</span>
+              </label>
+              <label>
+                Preço do kg do material (R$)
+                <input name="materialKgPrice" type="number" min="0" step="0.01" value="95">
+                <span class="hint" id="materialPriceHint">Preset editável para PLA. Ajuste para o preço que você realmente pagou.</span>
+              </label>
+              <label>
+                Tempo de impressão (horas)
+                <input name="printHours" type="number" min="0" step="0.1" value="6.5">
+              </label>
+              <label>
+                Margem desejada (%)
+                <input name="marginPercent" type="number" min="0" step="1" value="45">
+              </label>
+            </div>
+            <div class="quick-presets" aria-label="Presets rápidos de margem">
+              <span>Margem rápida</span>
+              <button type="button" data-margin="30">30% básica</button>
+              <button type="button" data-margin="45">45% equilibrada</button>
+              <button type="button" data-margin="65">65% sob encomenda</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Impressora e energia</legend>
+            <div class="field-grid">
+              <label>
+                Impressora
+                <select name="printer" id="printerSelect">
+                  <option value="95">Bambu Lab A1 Mini - estimado 95 W</option>
+                  <option value="115">Bambu Lab A1 - estimado 115 W</option>
+                  <option value="135">Bambu Lab P1P - estimado 135 W</option>
+                  <option value="145" selected>Bambu Lab P1S - estimado 145 W</option>
+                  <option value="155">Bambu Lab X1 Carbon - estimado 155 W</option>
+                  <option value="custom">Personalizada</option>
+                </select>
+              </label>
+              <label>
+                Consumo médio (W)
+                <input name="averageWatts" id="averageWatts" type="number" min="0" step="1" value="145">
+                <span class="hint">Valor estimado. Para precisão real, use medidor de tomada.</span>
+              </label>
+              <label>
+                Tarifa de energia (R$/kWh)
+                <input name="energyRate" type="number" min="0" step="0.01" value="0.95">
+              </label>
+              <label>
+                Desgaste da impressora (R$/h)
+                <input name="machineHourCost" type="number" min="0" step="0.01" value="1.20">
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="advanced-toggle">
+            <label class="switch">
+              <input type="checkbox" id="advancedToggle">
+              <span class="track"></span>
+              <span>Ativar custos completos</span>
+            </label>
+          </div>
+
+          <fieldset class="advanced" id="advancedFields">
+            <legend>Custos completos</legend>
+            <div class="field-grid">
+              <label>
+                Taxa de falha/perda (%)
+                <input name="failurePercent" type="number" min="0" step="1" value="8">
+              </label>
+              <label>
+                Embalagem e etiqueta (R$)
+                <input name="packagingCost" type="number" min="0" step="0.01" value="3.50">
+              </label>
+              <label>
+                Outros insumos (R$)
+                <input name="extraSupplies" type="number" min="0" step="0.01" value="2.00">
+              </label>
+              <label>
+                Mão de obra (min)
+                <input name="laborMinutes" type="number" min="0" step="1" value="20">
+              </label>
+              <label>
+                Valor da sua hora (R$)
+                <input name="hourlyRate" type="number" min="0" step="0.01" value="30">
+              </label>
+              <label>
+                Taxas/impostos (%)
+                <input name="taxPercent" type="number" min="0" step="0.1" value="0">
+                <span class="hint">Informe sua própria taxa. Não é orientação fiscal.</span>
+              </label>
+              <label>
+                Frete embutido (R$)
+                <input name="shippingCost" type="number" min="0" step="0.01" value="0">
+              </label>
+              <label>
+                Peso da peça pronta (opcional, g)
+                <input name="finalPartGrams" type="number" min="0" step="0.1" value="50">
+              </label>
+            </div>
+          </fieldset>
+        </form>
+
+        <aside class="result-panel" aria-live="polite">
+          <div class="result-card featured">
+            <span>Preço sugerido</span>
+            <strong id="suggestedPrice">R$ 0,00</strong>
+            <small>Com margem e taxas informadas</small>
+          </div>
+          <div class="result-grid">
+            <div class="result-card">
+              <span>Custo real</span>
+              <strong id="totalCost">R$ 0,00</strong>
+            </div>
+            <div class="result-card">
+              <span>Preço mínimo</span>
+              <strong id="minimumPrice">R$ 0,00</strong>
+            </div>
+            <div class="result-card">
+              <span>Lucro líquido</span>
+              <strong id="profitValue">R$ 0,00</strong>
+            </div>
+            <div class="result-card">
+              <span>Perda técnica</span>
+              <strong id="wasteValue">0 g</strong>
+            </div>
+            <div class="result-card">
+              <span>Lucro por hora</span>
+              <strong id="profitPerHour">R$ 0,00</strong>
+            </div>
+            <div class="result-card notice" id="healthCard">
+              <span>Diagnóstico</span>
+              <strong id="healthStatus">Seguro</strong>
+            </div>
+          </div>
+
+          <div class="breakdown">
+            <h3>Detalhamento do custo</h3>
+            <ul id="breakdownList"></ul>
+          </div>
+
+          <div class="insights">
+            <h3>Alertas da cotação</h3>
+            <ul id="insightList"></ul>
+          </div>
+
+          <button class="button primary wide" type="button" id="copySummary">Copiar resumo</button>
+          <p class="copy-status" id="copyStatus" aria-live="polite"></p>
+          <button class="button secondary wide" type="button" id="saveDefaults">Salvar padrões neste navegador</button>
+          <p class="save-status" id="saveStatus" aria-live="polite"></p>
+          <p class="small-note">Estimativa comercial. Impostos, CNPJ, nota fiscal e enquadramento devem ser confirmados com contador.</p>
+        </aside>
+      </section>
+
+      <section class="method-band" id="metodo">
+        <div>
+          <p class="eyebrow">Método Cotar3D</p>
+          <h2>Um cálculo simples, mas na ordem certa.</h2>
+        </div>
+        <div class="method-list">
+          <article>
+            <b>1</b>
+            <div>
+              <h3>Consumo total</h3>
+              <p>Material consumido pelo slicer multiplicado pelo preço real do kg.</p>
+            </div>
+          </article>
+          <article>
+            <b>2</b>
+            <div>
+              <h3>Operação</h3>
+              <p>Energia, desgaste da impressora, mão de obra, embalagem, frete e perda.</p>
+            </div>
+          </article>
+          <article>
+            <b>3</b>
+            <div>
+              <h3>Venda</h3>
+              <p>Margem desejada e taxas informadas por você para chegar no preço final.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pro-band" id="pro">
+        <div>
+          <p class="eyebrow">Depois da validação</p>
+          <h2>Cotar3D Pro pode virar a área paga sem refazer o produto do zero.</h2>
+        </div>
+        <ul>
+          <li>Salvar peças, fotos, materiais e impressoras.</li>
+          <li>Histórico de orçamentos e reabertura de cálculos antigos.</li>
+          <li>PDF ou link de orçamento para enviar ao cliente.</li>
+          <li>Dashboard de lucro por hora, por máquina e por material.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <strong>Cotar3D</strong>
+      <span>MVP gratuito: sem login, sem banco de dados e sem armazenamento remoto.</span>
+      <nav class="footer-links" aria-label="Links legais">
+        <a href="./politica-de-privacidade.html">Privacidade</a>
+        <a href="./termos-de-uso.html">Termos</a>
+      </nav>
+    </footer>
+
+    <script src="./js/app.js" defer></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Cotar3D",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "Calculadora de custo, margem e preço de venda para impressão 3D.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "BRL"
+        }
+      }
+    </script>
+  </body>
+</html>
