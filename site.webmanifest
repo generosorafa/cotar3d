@@ -1,0 +1,11 @@
+{
+  "name": "Cotar3D",
+  "short_name": "Cotar3D",
+  "description": "Calculadora de custo e preço de venda para impressão 3D.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8f4",
+  "theme_color": "#09a86f",
+  "lang": "pt-BR",
+  "categories": ["business", "productivity", "utilities"]
+}
