@@ -1,0 +1,10 @@
+# Firebase local state
+.firebase/
+.firebaserc
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
