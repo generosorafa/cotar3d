@@ -1,0 +1,25 @@
+{
+  "name": "cotar3d-site",
+  "version": "1.0.0",
+  "description": "Calculadora gratuita de custo, margem e preço de venda para impressão 3D.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node work/visual-test.cjs",
+    "test:visual": "node work/visual-test.cjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generosorafa/cotar3d.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/generosorafa/cotar3d/issues"
+  },
+  "homepage": "https://github.com/generosorafa/cotar3d#readme",
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}
