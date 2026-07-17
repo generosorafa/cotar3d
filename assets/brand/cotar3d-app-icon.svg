@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Cotar3D</title>
+  <rect width="64" height="64" rx="15" fill="#e2fff3"/>
+  <g transform="translate(7 7) scale(.78)">
+    <path fill="#15211f" d="M5 17 31 2l28 16-12 7-16-9-13 8L5 17Z"/>
+    <path fill="#20d896" d="m5 25 26 15v10L5 35V25Z"/>
+    <path fill="#15211f" d="m31 45 16-9 12 7-28 17L5 45l13-8 13 8Z"/>
+  </g>
+</svg>

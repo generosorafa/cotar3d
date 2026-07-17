@@ -6,6 +6,14 @@
   "display": "standalone",
   "background_color": "#f6f8f4",
   "theme_color": "#09a86f",
+  "icons": [
+    {
+      "src": "./assets/brand/cotar3d-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
   "lang": "pt-BR",
   "categories": ["business", "productivity", "utilities"]
 }

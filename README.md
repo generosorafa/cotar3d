@@ -1,60 +1,90 @@
-# Cotar3D
+<p align="center">
+  <img src="assets/brand/cotar3d-readme-cover.svg" alt="Cotar3D — transforme horas de impressão em preço justo" width="100%">
+</p>
 
-Calculadora gratuita de custo, margem e preço de venda para impressão 3D.
+<p align="center">
+  <a href="https://cotar3d.web.app/"><strong>Abrir a calculadora</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://cotar3d.web.app/como-calcular-preco-impressao-3d.html">Guia de precificação</a>
+</p>
 
-## O que tem neste MVP
+<p align="center">
+  Gratuito &nbsp;·&nbsp; Sem login &nbsp;·&nbsp; Cálculo direto no navegador
+</p>
 
-- Calculadora estática sem login e sem backend.
-- Modo simples e modo completo.
-- Presets editáveis de material e impressoras.
-- Salvamento local de padrões no navegador.
-- Página guia para SEO.
-- Política de privacidade e termos de uso iniciais.
-- Manifest básico para futura evolução como PWA.
-- Configuração inicial para Firebase Hosting.
+## O preço da impressão não termina no filamento
 
-## Publicar no Firebase Hosting
+O **Cotar3D** é uma calculadora de precificação criada para makers, vendedores e pequenos negócios de impressão 3D. Ela reúne os custos que costumam ficar espalhados — material, energia, máquina, perdas, mão de obra, insumos, taxas e margem — e transforma tudo em uma cotação clara.
 
-1. Crie um projeto no Firebase Console.
-2. O projeto já está configurado para o ID `cotar3d`.
-3. Instale ou use o Firebase CLI.
-4. Faça login:
+O objetivo é simples: ajudar você a entender o custo antes de prometer um preço ao cliente.
+
+> **Consumo real + operação + taxas + margem = preço sugerido**
+
+<p align="center">
+  <a href="https://cotar3d.web.app/">
+    <img src="assets/brand/cotar3d-product-preview.png" alt="Tela inicial do Cotar3D com exemplo de orçamento de impressão 3D" width="100%">
+  </a>
+</p>
+
+## Uma cotação completa em poucos passos
+
+1. Informe o consumo total mostrado pelo slicer, incluindo peça, suporte, torre, purga e brim ou raft.
+2. Escolha o material e indique quanto pagou pelo quilo do filamento.
+3. Selecione a impressora ou use um consumo de energia personalizado.
+4. Defina o tempo de impressão e a margem desejada.
+5. Revise custo real, preço mínimo, preço sugerido, lucro líquido e lucro por hora.
+
+Os campos avançados permitem incluir mão de obra, desgaste da máquina, embalagem, frete, reserva para falhas e taxas ou impostos quando fizerem parte da sua operação.
+
+## O que o Cotar3D entrega
+
+| Resultado | Por que importa |
+| --- | --- |
+| **Custo real** | Mostra quanto a peça consome antes da margem. |
+| **Preço mínimo** | Indica o limite para não vender abaixo do custo informado. |
+| **Preço sugerido** | Aplica a margem e as taxas configuradas à cotação. |
+| **Lucro líquido** | Separa faturamento de ganho real. |
+| **Lucro por hora** | Ajuda a comparar trabalhos que ocupam tempos diferentes da impressora. |
+| **Detalhamento do custo** | Explica para onde vai cada parte do valor calculado. |
+
+## Feito para a rotina de quem imprime
+
+- Utiliza o **consumo total do slicer**, não apenas o peso final da peça.
+- Inclui presets de impressoras Bambu Lab e aceita consumo personalizado.
+- Possui modo simples para cotações rápidas e campos completos para cenários detalhados.
+- Salva padrões somente no navegador, sem conta e sem envio de dados para servidor próprio.
+- Funciona em celular e computador, sem instalação obrigatória.
+
+## Clareza antes de vender
+
+O Cotar3D não escolhe o preço pelo usuário. Ele organiza as variáveis e mostra a lógica da cotação para que cada pessoa possa ajustar margem, mão de obra e custos à própria realidade.
+
+Os resultados são estimativas baseadas nos valores informados. Custos tributários e obrigações fiscais devem ser confirmados com um contador quando aplicáveis.
+
+## Em evolução
+
+A versão atual é gratuita e não exige cadastro. O produto foi preparado para crescer com recursos como histórico de cotações, peças salvas com fotos, materiais e impressoras personalizados, exportação de orçamento e uma futura área Pro.
+
+O desenvolvimento está sendo validado com uso real antes da inclusão de recursos pagos.
+
+## Projeto
+
+- **Produto:** [cotar3d.web.app](https://cotar3d.web.app/)
+- **Guia:** [Como calcular o preço de uma impressão 3D](https://cotar3d.web.app/como-calcular-preco-impressao-3d.html)
+- **Tecnologia:** HTML, CSS e JavaScript, com publicação no Firebase Hosting
+- **Testes:** fluxo funcional e visual automatizado em desktop e mobile com Playwright
+
+Para executar os testes localmente:
 
 ```bash
-firebase login
+npm install
+npx playwright install chromium
+npm test
 ```
 
-5. Publique a partir desta pasta:
+---
 
-```bash
-firebase deploy --only hosting --project cotar3d
-```
-
-O Firebase deve gerar URLs parecidas com:
-
-- `https://cotar3d.web.app`
-- `https://cotar3d.firebaseapp.com`
-
-## GitHub
-
-Repositório do projeto:
-
-- https://github.com/generosorafa/cotar3d
-
-Primeiro envio:
-
-```bash
-git init
-git add .
-git commit -m "Initial Cotar3D MVP"
-git branch -M main
-git remote add origin https://github.com/generosorafa/cotar3d.git
-git push -u origin main
-```
-
-## Antes de publicar oficialmente
-
-- Conferir URLs canônicas em `index.html`, `sitemap.xml`, `robots.txt` e páginas internas sempre que trocar de domínio.
-- Revisar política de privacidade e termos antes de usar analytics, anúncios, login ou pagamentos.
-- Testar em celular real.
-- Validar fórmula com usuários que imprimem em 3D.
+<p align="center">
+  <strong>Cotar3D</strong><br>
+  Precificação com clareza para impressão 3D.
+</p>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
+  <title id="title">Cotar3D</title>
+  <desc id="desc">Transforme horas de impressão em preço justo.</desc>
+  <defs>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0v44" fill="none" stroke="#dce7e2" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="420" fill="#f6f8f4"/>
+  <rect width="1280" height="420" fill="url(#grid)" opacity=".72"/>
+  <rect x="38" y="38" width="1204" height="344" rx="22" fill="#15211f"/>
+  <g transform="translate(102 114) scale(2.95)">
+    <path fill="#f6f8f4" d="M5 17 31 2l28 16-12 7-16-9-13 8L5 17Z"/>
+    <path fill="#20d896" d="m5 25 26 15v10L5 35V25Z"/>
+    <path fill="#f6f8f4" d="m31 45 16-9 12 7-28 17L5 45l13-8 13 8Z"/>
+  </g>
+  <text x="350" y="149" fill="#20d896" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="3">PRECIFICAÇÃO PARA IMPRESSÃO 3D</text>
+  <text x="346" y="240" fill="#f6f8f4" font-family="Arial, Helvetica, sans-serif" font-size="86" font-weight="800">Cotar3D</text>
+  <text x="350" y="298" fill="#c9d6d1" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="500">Transforme horas de impressão em preço justo.</text>
+  <g fill="#20d896" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">
+    <text x="350" y="342">CUSTO REAL</text>
+    <circle cx="470" cy="336" r="3"/>
+    <text x="492" y="342">MARGEM</text>
+    <circle cx="582" cy="336" r="3"/>
+    <text x="604" y="342">LUCRO</text>
+  </g>
+</svg>
