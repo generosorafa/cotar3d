@@ -8,6 +8,8 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Cotar3D | Precifique impressão 3D sem vender no prejuízo">
     <meta property="og:description" content="Calculadora gratuita para estimar custo real, preço sugerido, lucro líquido e lucro por hora em impressões 3D.">
+    <meta property="og:url" content="https://cotar3d.web.app/">
+    <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Cotar3D">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Cotar3D | Precifique impressão 3D sem vender no prejuízo">
@@ -27,10 +29,10 @@
         <span>Cotar3D</span>
       </a>
       <nav class="nav" aria-label="Navegacao principal">
-        <a href="#calculadora">Calcular</a>
+        <a href="#calculadora" data-nav-target="calculadora">Calcular</a>
         <a href="./como-calcular-preco-impressao-3d.html">Guia</a>
-        <a href="#metodo">Método</a>
-        <a href="#pro">Pro</a>
+        <a href="#metodo" data-nav-target="metodo">Método</a>
+        <a href="#pro" data-nav-target="pro">Pro</a>
       </nav>
     </header>
 
@@ -107,6 +109,30 @@
               <strong>R$ 34,34</strong>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section class="steps-band" aria-labelledby="steps-title">
+        <div class="section-kicker">
+          <p class="eyebrow">Fluxo rápido</p>
+          <h2 id="steps-title">Três decisões antes de mandar o preço.</h2>
+        </div>
+        <div class="step-cards">
+          <article>
+            <b>01</b>
+            <h3>Use o total do slicer</h3>
+            <p>Comece pelo consumo real da impressão, incluindo suporte, purga, torre, brim e raft.</p>
+          </article>
+          <article>
+            <b>02</b>
+            <h3>Inclua a operação</h3>
+            <p>Energia, máquina, falhas e insumos entram antes da margem para evitar preço artificialmente baixo.</p>
+          </article>
+          <article>
+            <b>03</b>
+            <h3>Revise o lucro por hora</h3>
+            <p>Além do preço final, veja se a peça compensa o tempo que ocupa sua impressora.</p>
+          </article>
         </div>
       </section>
 
@@ -355,6 +381,12 @@
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web",
         "description": "Calculadora de custo, margem e preço de venda para impressão 3D.",
+        "url": "https://cotar3d.web.app/",
+        "featureList": [
+          "Cálculo de custo de material por consumo do slicer",
+          "Estimativa de energia, desgaste, falhas e mão de obra",
+          "Preço sugerido com margem e taxas informadas"
+        ],
         "offers": {
           "@type": "Offer",
           "price": "0",

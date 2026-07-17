@@ -9,6 +9,7 @@ const advancedToggle = document.querySelector("#advancedToggle");
 const advancedFields = document.querySelector("#advancedFields");
 const copySummary = document.querySelector("#copySummary");
 const saveDefaults = document.querySelector("#saveDefaults");
+const sectionNavLinks = document.querySelectorAll("[data-nav-target]");
 
 const output = {
   suggestedPrice: document.querySelector("#suggestedPrice"),
@@ -357,6 +358,23 @@ function loadLocalDefaults() {
   }
 }
 
+function updateActiveSectionNav() {
+  const currentHash = window.location.hash.replace("#", "");
+  const validTargets = Array.from(sectionNavLinks, (link) => link.dataset.navTarget);
+  const fallbackTarget = validTargets.includes(currentHash) ? currentHash : "calculadora";
+
+  sectionNavLinks.forEach((link) => {
+    const isActive = link.dataset.navTarget === fallbackTarget;
+    link.classList.toggle("is-active", isActive);
+
+    if (isActive) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+}
+
 form.addEventListener("input", calculateQuote);
 form.addEventListener("change", calculateQuote);
 printerSelect.addEventListener("change", syncPrinterPreset);
@@ -365,7 +383,9 @@ marginButtons.forEach((button) => button.addEventListener("click", applyMarginPr
 advancedToggle.addEventListener("change", toggleAdvanced);
 copySummary.addEventListener("click", copyQuoteSummary);
 saveDefaults.addEventListener("click", saveLocalDefaults);
+window.addEventListener("hashchange", updateActiveSectionNav);
 
 loadLocalDefaults();
 toggleAdvanced();
 calculateQuote();
+updateActiveSectionNav();

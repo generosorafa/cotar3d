@@ -93,6 +93,36 @@ a {
   color: var(--mint-2);
 }
 
+.nav a {
+  position: relative;
+  padding-block: 8px;
+}
+
+.nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--mint-2);
+  content: "";
+  opacity: 0;
+  transform: scaleX(0.72);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.nav a[aria-current="page"],
+.nav a.is-active {
+  color: var(--ink);
+}
+
+.nav a[aria-current="page"]::after,
+.nav a.is-active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(350px, 0.95fr);
@@ -125,7 +155,7 @@ h1,
 h2,
 h3 {
   font-family: Sora, Inter, ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
 }
 
 h1 {
@@ -283,7 +313,7 @@ h3 {
   color: #ffffff;
   font-size: 28px;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .example-label {
@@ -320,7 +350,7 @@ h3 {
   color: #ffffff;
   font-size: 25px;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .cascade,
@@ -391,14 +421,70 @@ h3 {
   color: var(--mint);
   font-size: 28px;
   font-weight: 900;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
 }
 
 .problem-band,
+.steps-band,
 .method-band,
 .pro-band,
 .calculator-shell {
   padding-inline: clamp(18px, 5vw, 78px);
+}
+
+.steps-band {
+  display: grid;
+  gap: 34px;
+  padding-top: 76px;
+  padding-bottom: 82px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.step-cards,
+.guide-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.step-cards article,
+.guide-summary article {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 16px 44px rgba(20, 42, 36, 0.08);
+  padding: clamp(18px, 2.5vw, 26px);
+}
+
+.step-cards b,
+.guide-summary b {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(43, 229, 159, 0.16);
+  color: #08704e;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 6px 10px;
+  text-transform: uppercase;
+}
+
+.step-cards h3,
+.guide-summary h2 {
+  margin-top: 16px;
+  font-size: clamp(21px, 2.2vw, 29px);
+  letter-spacing: 0;
+  line-height: 1.12;
+}
+
+.step-cards p,
+.guide-summary p {
+  margin: 11px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .problem-band {
@@ -680,7 +766,7 @@ a:focus-visible {
   color: var(--ink);
   font-size: clamp(20px, 2.3vw, 28px);
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .result-card.featured {
@@ -852,7 +938,7 @@ a:focus-visible {
 
 .method-list h3 {
   font-size: 22px;
-  letter-spacing: -0.035em;
+  letter-spacing: 0;
 }
 
 .method-list p {
@@ -943,6 +1029,11 @@ footer strong {
   margin-top: 6px;
 }
 
+.guide-summary {
+  max-width: 1100px;
+  margin: 0 auto 22px;
+}
+
 .legal-card {
   max-width: 920px;
   margin: 0 auto;
@@ -992,7 +1083,9 @@ footer strong {
   .calculator-shell,
   .method-band,
   .pro-band,
-  .feature-showcase {
+  .feature-showcase,
+  .step-cards,
+  .guide-summary {
     grid-template-columns: 1fr;
   }
 
@@ -1042,7 +1135,9 @@ footer strong {
   .cascade-card,
   .calculator,
   .result-panel,
-  .pro-band {
+  .pro-band,
+  .step-cards article,
+  .guide-summary article {
     border-radius: 18px;
   }
 }
