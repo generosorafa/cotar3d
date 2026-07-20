@@ -773,6 +773,12 @@ a:focus-visible {
   color: #08704e;
 }
 
+.result-card.featured small {
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
 .result-card.featured strong {
   color: #08704e;
   font-size: clamp(40px, 5vw, 60px);
@@ -920,6 +926,11 @@ a:focus-visible {
   font-weight: 800;
 }
 
+.save-status:empty,
+.copy-status:empty {
+  display: none;
+}
+
 .method-band {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
@@ -1054,6 +1065,188 @@ footer strong {
 .guide-hero .button {
   justify-self: center;
   margin-top: 6px;
+}
+
+.result-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.result-actions .button {
+  min-height: 46px;
+  padding-inline: 14px;
+  font-size: 13px;
+}
+
+.result-actions .button.primary {
+  grid-column: 1 / -1;
+}
+
+.client-quote-dialog {
+  width: min(620px, calc(100vw - 28px));
+  max-height: calc(100svh - 28px);
+  margin: auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.client-quote-dialog::backdrop {
+  background: rgba(10, 20, 18, 0.68);
+  backdrop-filter: blur(5px);
+}
+
+.client-quote-sheet {
+  position: relative;
+  max-height: calc(100svh - 28px);
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 28px 90px rgba(10, 24, 20, 0.28);
+  padding: clamp(24px, 5vw, 42px);
+}
+
+.dialog-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #f6f8f4;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.client-quote-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding-right: 48px;
+}
+
+.client-quote-brand img {
+  width: 38px;
+  height: 38px;
+}
+
+.client-quote-brand div {
+  display: grid;
+  gap: 2px;
+}
+
+.client-quote-brand strong {
+  font-size: 17px;
+}
+
+.client-quote-brand span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.client-quote-heading {
+  margin-top: 42px;
+}
+
+.client-quote-heading p {
+  margin: 0 0 8px;
+  color: var(--mint-2);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.client-quote-heading h2 {
+  font-size: clamp(28px, 5vw, 40px);
+  line-height: 1.08;
+}
+
+.client-quote-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 28px 0 0;
+}
+
+.client-quote-details div {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.client-quote-details dt {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.client-quote-details dd {
+  margin: 6px 0 0;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.client-quote-total {
+  display: grid;
+  gap: 5px;
+  margin-top: 28px;
+  border: 1px solid rgba(9, 168, 111, 0.34);
+  border-radius: 14px;
+  background: #effbf5;
+  padding: 20px;
+}
+
+.client-quote-total span {
+  color: #08704e;
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.client-quote-total strong {
+  color: #08704e;
+  font-size: clamp(36px, 7vw, 52px);
+  line-height: 1;
+}
+
+.client-quote-total small {
+  color: #39715e;
+  font-weight: 750;
+}
+
+.client-quote-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.client-quote-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.client-quote-status {
+  min-height: 18px;
+  margin: 10px 0 0;
+  color: #08704e;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .guide-summary {
@@ -1232,6 +1425,16 @@ footer strong {
     gap: 5px;
   }
 
+  .client-quote-details,
+  .client-quote-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .client-quote-sheet {
+    border-radius: 16px;
+    padding: 22px;
+  }
+
   .method-list article {
     grid-template-columns: 42px 1fr;
   }
@@ -1244,5 +1447,48 @@ footer strong {
   .step-cards article,
   .guide-summary article {
     border-radius: 18px;
+  }
+}
+
+@media print {
+  @page {
+    margin: 16mm;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  body > :not(.client-quote-dialog) {
+    display: none !important;
+  }
+
+  .client-quote-dialog[open] {
+    position: static;
+    display: block;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    background: #ffffff;
+  }
+
+  .client-quote-dialog::backdrop {
+    display: none;
+  }
+
+  .client-quote-sheet {
+    max-height: none;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .dialog-close,
+  .client-quote-actions,
+  .client-quote-status {
+    display: none !important;
   }
 }

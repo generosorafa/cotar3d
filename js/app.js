@@ -10,9 +10,15 @@ const advancedFields = document.querySelector("#advancedFields");
 const copySummary = document.querySelector("#copySummary");
 const saveDefaults = document.querySelector("#saveDefaults");
 const sectionNavLinks = document.querySelectorAll("[data-nav-target]");
+const openClientQuote = document.querySelector("#openClientQuote");
+const clientQuoteDialog = document.querySelector("#clientQuoteDialog");
+const closeClientQuote = document.querySelector("#closeClientQuote");
+const copyClientQuote = document.querySelector("#copyClientQuote");
+const printClientQuote = document.querySelector("#printClientQuote");
 
 const output = {
   suggestedPrice: document.querySelector("#suggestedPrice"),
+  unitPriceSummary: document.querySelector("#unitPriceSummary"),
   totalCost: document.querySelector("#totalCost"),
   minimumPrice: document.querySelector("#minimumPrice"),
   profitValue: document.querySelector("#profitValue"),
@@ -24,6 +30,12 @@ const output = {
   insightList: document.querySelector("#insightList"),
   copyStatus: document.querySelector("#copyStatus"),
   saveStatus: document.querySelector("#saveStatus"),
+  clientQuoteJob: document.querySelector("#clientQuoteJob"),
+  clientQuoteMaterial: document.querySelector("#clientQuoteMaterial"),
+  clientQuoteQuantity: document.querySelector("#clientQuoteQuantity"),
+  clientQuoteTotal: document.querySelector("#clientQuoteTotal"),
+  clientQuoteUnit: document.querySelector("#clientQuoteUnit"),
+  clientQuoteStatus: document.querySelector("#clientQuoteStatus"),
 };
 
 const localDefaultsKey = "cotar3d-defaults-v1";
@@ -56,6 +68,10 @@ function numberFrom(formData, key) {
 
 function money(value) {
   return currency.format(Math.max(0, value));
+}
+
+function quantityLabel(quantity) {
+  return `${quantity} ${quantity === 1 ? "peça" : "peças"}`;
 }
 
 function getSelectedMaterial() {
@@ -138,6 +154,7 @@ function calculateQuote() {
 
   const consumedGrams = numberFrom(data, "consumedGrams");
   const materialKgPriceValue = numberFrom(data, "materialKgPrice");
+  const quantity = Math.max(1, Math.floor(numberFrom(data, "quantity") || 1));
   const printHours = numberFrom(data, "printHours");
   const marginPercent = numberFrom(data, "marginPercent");
   const watts = numberFrom(data, "averageWatts");
@@ -175,8 +192,10 @@ function calculateQuote() {
   const profitPerHour = printHours > 0 ? profitValue / printHours : 0;
   const realMargin = suggestedPrice > 0 ? (profitValue / suggestedPrice) * 100 : 0;
   const wasteGrams = finalPartGrams > 0 ? Math.max(0, consumedGrams - finalPartGrams) : 0;
+  const unitPrice = suggestedPrice / quantity;
 
   output.suggestedPrice.textContent = money(suggestedPrice);
+  output.unitPriceSummary.textContent = `${quantityLabel(quantity)} · ${money(unitPrice)} por peça`;
   output.totalCost.textContent = money(totalCost);
   output.minimumPrice.textContent = money(minimumPrice);
   output.profitValue.textContent = money(profitValue);
@@ -227,13 +246,15 @@ function calculateQuote() {
     .join("");
 
   return {
-    jobName: String(data.get("jobName") || "Peca sem nome"),
+    jobName: String(data.get("jobName") || "Peça sem nome"),
     material: String(data.get("material") || "Material"),
+    quantity,
     consumedGrams,
     materialCost,
     totalCost,
     minimumPrice,
     suggestedPrice,
+    unitPrice,
     profitValue,
     profitPerHour,
     taxCost,
@@ -276,11 +297,13 @@ function copyQuoteSummary() {
   const summary = [
     `Cotacao Cotar3D - ${quote.jobName}`,
     `Material: ${quote.material}`,
+    `Quantidade: ${quantityLabel(quote.quantity)}`,
     `Consumo do slicer: ${quote.consumedGrams.toFixed(1)} g`,
     `Tempo de impressao: ${quote.printHours.toFixed(1)} h`,
     `Custo real: ${money(quote.totalCost)}`,
     `Preco minimo: ${money(quote.minimumPrice)}`,
     `Preco sugerido: ${money(quote.suggestedPrice)}`,
+    `Preco por peca: ${money(quote.unitPrice)}`,
     `Taxas/impostos: ${money(quote.taxCost)}`,
     `Lucro estimado: ${money(quote.profitValue)}`,
     `Lucro por hora: ${money(quote.profitPerHour)}`,
@@ -298,7 +321,7 @@ function copyQuoteSummary() {
       if (timer) {
         timer(() => {
           output.copyStatus.textContent = "";
-          copySummary.textContent = "Copiar resumo";
+          copySummary.textContent = "Copiar análise interna";
         }, 1800);
       }
     }).catch(() => {
@@ -358,6 +381,68 @@ function loadLocalDefaults() {
   }
 }
 
+function updateClientQuote() {
+  const quote = calculateQuote();
+
+  output.clientQuoteJob.textContent = quote.jobName;
+  output.clientQuoteMaterial.textContent = quote.material;
+  output.clientQuoteQuantity.textContent = quantityLabel(quote.quantity);
+  output.clientQuoteTotal.textContent = money(quote.suggestedPrice);
+  output.clientQuoteUnit.textContent = `${money(quote.unitPrice)} por peça`;
+  output.clientQuoteStatus.textContent = "";
+
+  return quote;
+}
+
+function showClientQuote() {
+  const quote = updateClientQuote();
+
+  if (quote.suggestedPrice <= 0) {
+    output.copyStatus.textContent = "Preencha os custos antes de gerar o orçamento.";
+    return;
+  }
+
+  output.copyStatus.textContent = "";
+
+  if (typeof clientQuoteDialog.showModal === "function") {
+    clientQuoteDialog.showModal();
+  } else {
+    clientQuoteDialog.setAttribute("open", "");
+  }
+}
+
+function hideClientQuote() {
+  if (typeof clientQuoteDialog.close === "function") {
+    clientQuoteDialog.close();
+  } else {
+    clientQuoteDialog.removeAttribute("open");
+  }
+}
+
+function copyClientQuoteText() {
+  const quote = updateClientQuote();
+  const text = [
+    "ORÇAMENTO DE IMPRESSÃO 3D",
+    quote.jobName,
+    `Material: ${quote.material}`,
+    `Quantidade: ${quantityLabel(quote.quantity)}`,
+    `Valor por peça: ${money(quote.unitPrice)}`,
+    `Valor total: ${money(quote.suggestedPrice)}`,
+    "Prazo, acabamento, frete e condições de pagamento devem ser confirmados antes da produção.",
+  ].join("\n");
+
+  if (!navigator.clipboard) {
+    output.clientQuoteStatus.textContent = "Copiar automaticamente não está disponível neste navegador.";
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    output.clientQuoteStatus.textContent = "Orçamento copiado para enviar ao cliente.";
+  }).catch(() => {
+    output.clientQuoteStatus.textContent = "Não foi possível copiar automaticamente.";
+  });
+}
+
 function updateActiveSectionNav() {
   const currentHash = window.location.hash.replace("#", "");
   const validTargets = Array.from(sectionNavLinks, (link) => link.dataset.navTarget);
@@ -383,6 +468,13 @@ marginButtons.forEach((button) => button.addEventListener("click", applyMarginPr
 advancedToggle.addEventListener("change", toggleAdvanced);
 copySummary.addEventListener("click", copyQuoteSummary);
 saveDefaults.addEventListener("click", saveLocalDefaults);
+openClientQuote.addEventListener("click", showClientQuote);
+closeClientQuote.addEventListener("click", hideClientQuote);
+copyClientQuote.addEventListener("click", copyClientQuoteText);
+printClientQuote.addEventListener("click", () => window.print());
+clientQuoteDialog.addEventListener("click", (event) => {
+  if (event.target === clientQuoteDialog) hideClientQuote();
+});
 window.addEventListener("hashchange", updateActiveSectionNav);
 
 loadLocalDefaults();

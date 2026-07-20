@@ -46,6 +46,7 @@ Os campos avançados permitem incluir mão de obra, desgaste da máquina, embala
 | **Lucro líquido** | Separa faturamento de ganho real. |
 | **Lucro por hora** | Ajuda a comparar trabalhos que ocupam tempos diferentes da impressora. |
 | **Detalhamento do custo** | Explica para onde vai cada parte do valor calculado. |
+| **Orçamento para o cliente** | Mostra quantidade, valor unitário e total sem revelar custos internos. |
 
 ## Feito para a rotina de quem imprime
 
@@ -54,6 +55,7 @@ Os campos avançados permitem incluir mão de obra, desgaste da máquina, embala
 - Possui modo simples para cotações rápidas e campos completos para cenários detalhados.
 - Salva padrões somente no navegador, sem conta e sem envio de dados para servidor próprio.
 - Funciona em celular e computador, sem instalação obrigatória.
+- Gera um orçamento limpo para copiar, imprimir ou salvar como PDF.
 
 ## Clareza antes de vender
 
@@ -63,7 +65,7 @@ Os resultados são estimativas baseadas nos valores informados. Custos tributár
 
 ## Em evolução
 
-A versão atual é gratuita e não exige cadastro. O produto foi preparado para crescer com recursos como histórico de cotações, peças salvas com fotos, materiais e impressoras personalizados, exportação de orçamento e uma futura área Pro.
+A versão atual é gratuita e não exige cadastro. O produto foi preparado para crescer com recursos como histórico de cotações, peças salvas com fotos, materiais e impressoras personalizados, identidade comercial e uma futura área Pro.
 
 O desenvolvimento está sendo validado com uso real antes da inclusão de recursos pagos.
 

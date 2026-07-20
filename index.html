@@ -153,6 +153,11 @@
                 <input name="jobName" type="text" value="Suporte personalizado" autocomplete="off">
               </label>
               <label>
+                Quantidade de peças
+                <input name="quantity" type="number" min="1" step="1" value="1" inputmode="numeric">
+                <span class="hint">Use o consumo e o tempo do lote inteiro informado pelo slicer.</span>
+              </label>
+              <label>
                 Material
                 <select name="material">
                   <option value="PLA" data-price="95">PLA</option>
@@ -164,15 +169,15 @@
                   <option value="Outro" data-price="0">Outro</option>
                 </select>
               </label>
-              <label class="wide-field">
-                Material consumido pelo slicer (g)
-                <input name="consumedGrams" type="number" min="0" step="0.1" value="85">
-                <span class="hint">Use o total exibido no Bambu Studio, Orca, PrusaSlicer ou Cura. Inclui peça, suporte, torre, purga, brim e raft.</span>
-              </label>
               <label>
                 Preço do kg do material (R$)
                 <input name="materialKgPrice" type="number" min="0" step="0.01" value="95">
                 <span class="hint" id="materialPriceHint">Preset editável para PLA. Ajuste para o preço que você realmente pagou.</span>
+              </label>
+              <label class="wide-field">
+                Material consumido pelo slicer (g)
+                <input name="consumedGrams" type="number" min="0" step="0.1" value="85">
+                <span class="hint">Use o total exibido no Bambu Studio, Orca, PrusaSlicer ou Cura. Inclui peça, suporte, torre, purga, brim e raft.</span>
               </label>
               <label>
                 Tempo de impressão (horas)
@@ -271,9 +276,9 @@
 
         <aside class="result-panel" aria-live="polite">
           <div class="result-card featured">
-            <span>Preço sugerido</span>
+            <span>Preço sugerido do pedido</span>
             <strong id="suggestedPrice">R$ 0,00</strong>
-            <small>Com margem e taxas informadas</small>
+            <small id="unitPriceSummary">1 peça · R$ 0,00 por peça</small>
           </div>
           <div class="result-grid">
             <div class="result-card">
@@ -330,9 +335,12 @@
             <ul id="insightList"></ul>
           </div>
 
-          <button class="button primary wide" type="button" id="copySummary">Copiar resumo</button>
+          <div class="result-actions">
+            <button class="button primary wide" type="button" id="openClientQuote">Gerar orçamento para cliente</button>
+            <button class="button secondary wide" type="button" id="copySummary">Copiar análise interna</button>
+            <button class="button secondary wide" type="button" id="saveDefaults">Salvar padrões</button>
+          </div>
           <p class="copy-status" id="copyStatus" aria-live="polite"></p>
-          <button class="button secondary wide" type="button" id="saveDefaults">Salvar padrões neste navegador</button>
           <p class="save-status" id="saveStatus" aria-live="polite"></p>
           <p class="small-note">Estimativa comercial. Impostos, CNPJ, nota fiscal e enquadramento devem ser confirmados com contador.</p>
         </aside>
@@ -376,7 +384,7 @@
         <ul>
           <li>Salvar peças, fotos, materiais e impressoras.</li>
           <li>Histórico de orçamentos e reabertura de cálculos antigos.</li>
-          <li>PDF ou link de orçamento para enviar ao cliente.</li>
+          <li>Orçamentos com identidade própria, dados do cliente e histórico.</li>
           <li>Dashboard de lucro por hora, por máquina e por material.</li>
         </ul>
       </section>
@@ -391,6 +399,49 @@
       </nav>
     </footer>
 
+    <dialog class="client-quote-dialog" id="clientQuoteDialog" aria-labelledby="clientQuoteTitle">
+      <article class="client-quote-sheet">
+        <button class="dialog-close" type="button" id="closeClientQuote" aria-label="Fechar orçamento" title="Fechar">×</button>
+        <div class="client-quote-brand">
+          <img src="./assets/brand/cotar3d-mark.svg" alt="" width="38" height="38">
+          <div>
+            <strong>Cotar3D</strong>
+            <span>Orçamento de impressão 3D</span>
+          </div>
+        </div>
+
+        <div class="client-quote-heading">
+          <p>Orçamento</p>
+          <h2 id="clientQuoteTitle"><span id="clientQuoteJob">Peça sem nome</span></h2>
+        </div>
+
+        <dl class="client-quote-details">
+          <div>
+            <dt>Material</dt>
+            <dd id="clientQuoteMaterial">Material</dd>
+          </div>
+          <div>
+            <dt>Quantidade</dt>
+            <dd id="clientQuoteQuantity">1 peça</dd>
+          </div>
+        </dl>
+
+        <div class="client-quote-total">
+          <span>Valor total</span>
+          <strong id="clientQuoteTotal">R$ 0,00</strong>
+          <small id="clientQuoteUnit">R$ 0,00 por peça</small>
+        </div>
+
+        <p class="client-quote-note">Prazo, acabamento, frete e condições de pagamento devem ser confirmados antes da produção.</p>
+
+        <div class="client-quote-actions">
+          <button class="button primary" type="button" id="copyClientQuote">Copiar orçamento</button>
+          <button class="button secondary" type="button" id="printClientQuote">Imprimir ou salvar PDF</button>
+        </div>
+        <p class="client-quote-status" id="clientQuoteStatus" aria-live="polite"></p>
+      </article>
+    </dialog>
+
     <script src="./js/app.js" defer></script>
     <script type="application/ld+json">
       {
@@ -404,7 +455,8 @@
         "featureList": [
           "Cálculo de custo de material por consumo do slicer",
           "Estimativa de energia, desgaste, falhas e mão de obra",
-          "Preço sugerido com margem e taxas informadas"
+          "Preço sugerido com margem e taxas informadas",
+          "Orçamento limpo para compartilhar com o cliente"
         ],
         "offers": {
           "@type": "Offer",
