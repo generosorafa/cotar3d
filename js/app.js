@@ -31,6 +31,8 @@ const output = {
   healthStatus: document.querySelector("#healthStatus"),
   breakdownList: document.querySelector("#breakdownList"),
   insightList: document.querySelector("#insightList"),
+  insightDetails: document.querySelector("#insightDetails"),
+  insightSummary: document.querySelector("#insightSummary"),
   copyStatus: document.querySelector("#copyStatus"),
   saveStatus: document.querySelector("#saveStatus"),
   clientQuoteJob: document.querySelector("#clientQuoteJob"),
@@ -264,6 +266,13 @@ function calculateQuote() {
   output.insightList.innerHTML = insights
     .map(([tone, text]) => `<li class="${tone}">${text}</li>`)
     .join("");
+
+  const criticalInsights = insights.filter(([tone]) => tone === "danger").length;
+  output.insightSummary.textContent = `${insights.length} ${insights.length === 1 ? "observação" : "observações"}`;
+
+  if (criticalInsights > 0) {
+    output.insightDetails.open = true;
+  }
 
   return {
     jobName: String(data.get("jobName") || "Peça sem nome"),

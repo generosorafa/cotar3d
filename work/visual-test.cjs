@@ -40,6 +40,7 @@ async function testViewport(browser, config) {
   const suggested = await page.locator("#suggestedPrice").innerText();
   const unitSummary = await page.locator("#unitPriceSummary").innerText();
   const marginSummary = await page.locator("#marginSummary").innerText();
+  const alertsClosedByDefault = !(await page.locator("#insightDetails").evaluate((element) => element.open));
   const mobilePriceStripDisplay = await page.locator(".mobile-price-strip").evaluate((element) => {
     return getComputedStyle(element).display;
   });
@@ -47,6 +48,10 @@ async function testViewport(browser, config) {
     calculatorTop: document.querySelector("#calculadora").getBoundingClientRect().top + scrollY,
     problemTop: document.querySelector("#problema").getBoundingClientRect().top + scrollY,
     horizontalOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    calculatorHeight: document.querySelector("#quoteForm").getBoundingClientRect().height,
+    resultHeight: document.querySelector("#quoteResults").getBoundingClientRect().height,
+    primaryColumns: getComputedStyle(document.querySelector("#quoteForm fieldset .field-grid"))
+      .gridTemplateColumns.split(" ").length,
   }));
 
   await page.click("#openClientQuote");
@@ -98,6 +103,20 @@ async function testViewport(browser, config) {
   const failureReserve = (await page.locator("#breakdownList li").filter({
     hasText: "Reserva para repetir impressão",
   }).textContent()).replace(/\s/g, " ");
+  const advancedCalculatorHeight = await page.locator("#quoteForm").evaluate((element) => {
+    return element.getBoundingClientRect().height;
+  });
+  if (!config.mobile) {
+    await page.evaluate(() => {
+      document.documentElement.style.scrollBehavior = "auto";
+      window.location.hash = "calculadora";
+      document.querySelector("#calculadora").scrollIntoView({ block: "start" });
+    });
+    await page.waitForTimeout(150);
+    await page.screenshot({ path: path.join(outputDir, "cotar3d-desktop-completo.png") });
+  }
+  await page.locator('[name="consumedGrams"]').fill("0");
+  const alertsOpenedForCritical = await page.locator("#insightDetails").evaluate((element) => element.open);
 
   if (config.mobile) {
     await page.evaluate(() => {
@@ -125,6 +144,8 @@ async function testViewport(browser, config) {
     if (!navText.includes(label)) failures.push(`menu sem ${label}`);
   }
   if (!settingsClosedByDefault) failures.push("ajustes de impressora deveriam iniciar recolhidos");
+  if (!alertsClosedByDefault) failures.push("alertas deveriam iniciar recolhidos");
+  if (!alertsOpenedForCritical) failures.push("alertas críticos deveriam abrir automaticamente");
   if (!cost.includes("R$")) failures.push(`custo nao renderizou: ${cost}`);
   if (!suggested.includes("R$")) failures.push(`preco sugerido nao renderizou: ${suggested}`);
   if (!unitSummary.includes("4 peças") || !unitSummary.includes("por peça")) {
@@ -153,6 +174,18 @@ async function testViewport(browser, config) {
   }
   if (config.mobile && mobilePriceStripDisplay === "none") failures.push("atalho de resultado nao apareceu no celular");
   if (!config.mobile && mobilePriceStripDisplay !== "none") failures.push("atalho de resultado apareceu no desktop");
+  if (!config.mobile && layoutMetrics.primaryColumns !== 3) {
+    failures.push(`formulario desktop com ${layoutMetrics.primaryColumns} colunas`);
+  }
+  if (!config.mobile && layoutMetrics.calculatorHeight > config.viewport.height - 130) {
+    failures.push(`formulario desktop ainda muito alto: ${Math.round(layoutMetrics.calculatorHeight)}px`);
+  }
+  if (!config.mobile && layoutMetrics.resultHeight > config.viewport.height - 100) {
+    failures.push(`painel de resultado desktop ainda muito alto: ${Math.round(layoutMetrics.resultHeight)}px`);
+  }
+  if (!config.mobile && advancedCalculatorHeight > config.viewport.height - 100) {
+    failures.push(`modo completo desktop ainda muito alto: ${Math.round(advancedCalculatorHeight)}px`);
+  }
   if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(" | ")}`);
   if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(" | ")}`);
 

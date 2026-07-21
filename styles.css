@@ -880,7 +880,7 @@ summary:focus-visible {
 
 .insights {
   border-top: 1px solid var(--line);
-  padding-top: 12px;
+  padding: 12px;
 }
 
 .result-details {
@@ -891,6 +891,13 @@ summary:focus-visible {
 
 .result-details summary {
   font-size: 14px;
+}
+
+.insights-details summary small {
+  grid-column: 1;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
 }
 
 .result-details .result-guide,
@@ -1393,6 +1400,210 @@ footer strong {
   border-radius: 999px;
   background: linear-gradient(90deg, var(--mint), var(--cyan));
   content: "";
+}
+
+@media (min-width: 1041px) {
+  .calculator-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 410px);
+    gap: 18px;
+    scroll-margin-top: 74px;
+    padding-top: 26px;
+    padding-bottom: 58px;
+  }
+
+  .calculator,
+  .result-panel {
+    padding: 22px;
+  }
+
+  .calculator .section-heading h2 {
+    max-width: 760px;
+    font-size: 36px;
+    line-height: 1.05;
+  }
+
+  .calculator .section-heading .eyebrow {
+    margin-bottom: 8px;
+  }
+
+  .calculator .section-heading p:not(.eyebrow) {
+    max-width: 820px;
+    margin: 9px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .calculator > fieldset:first-of-type {
+    margin-top: 17px;
+  }
+
+  .calculator > fieldset:first-of-type legend {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px 12px;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid > label:first-child {
+    grid-column: span 2;
+  }
+
+  .calculator > fieldset:first-of-type .wide-field {
+    grid-column: auto;
+  }
+
+  .calculator label {
+    align-content: start;
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  .calculator input,
+  .calculator select {
+    min-height: 41px;
+    border-radius: 9px;
+    padding-inline: 11px;
+  }
+
+  .calculator .hint {
+    font-size: 10.5px;
+    line-height: 1.3;
+  }
+
+  .calculator .quick-presets {
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .calculator .quick-presets span {
+    font-size: 10px;
+  }
+
+  .calculator .quick-presets button {
+    min-height: 30px;
+    font-size: 11px;
+    padding-inline: 10px;
+  }
+
+  .calculator .settings-details {
+    margin-top: 13px;
+  }
+
+  .calculator .settings-details summary {
+    gap: 4px 12px;
+    padding: 10px 13px;
+    font-size: 13px;
+  }
+
+  .calculator .settings-details summary small {
+    font-size: 10.5px;
+  }
+
+  .calculator .settings-details fieldset {
+    padding: 13px;
+  }
+
+  .calculator .settings-details .field-grid,
+  .calculator .advanced .field-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px 12px;
+  }
+
+  .calculator .advanced-toggle {
+    margin-top: 13px;
+  }
+
+  .calculator .advanced.is-open {
+    margin-top: 14px;
+  }
+
+  .calculator .advanced legend {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .calculator .switch {
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .calculator .track {
+    width: 42px;
+    height: 24px;
+  }
+
+  .calculator .track::after {
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .calculator .switch input:checked + .track::after {
+    transform: translateX(18px);
+  }
+
+  .result-panel {
+    top: 84px;
+    gap: 9px;
+    max-height: calc(100svh - 102px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .result-card {
+    gap: 4px;
+    min-height: 76px;
+    border-radius: 10px;
+    padding: 11px 12px;
+  }
+
+  .result-card strong {
+    font-size: 23px;
+  }
+
+  .result-card.featured {
+    min-height: 116px;
+    padding: 14px;
+  }
+
+  .result-card.featured strong {
+    font-size: 44px;
+  }
+
+  .result-card.featured small {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .result-details summary {
+    min-height: 43px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .result-details summary::after {
+    font-size: 18px;
+  }
+
+  .result-actions {
+    gap: 7px;
+  }
+
+  .result-actions .button {
+    min-height: 40px;
+    font-size: 11px;
+    padding-inline: 10px;
+  }
+
+  .result-panel .small-note {
+    font-size: 10px;
+    line-height: 1.35;
+  }
 }
 
 @media (max-width: 1040px) {
