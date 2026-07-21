@@ -100,7 +100,7 @@ function updateMaterialHint() {
   const presetPrice = Number.parseFloat(selected?.dataset.price || "0");
 
   if (presetPrice > 0) {
-    materialPriceHint.textContent = `Preset editável para ${materialName}. Ajuste para o preço que você realmente pagou.`;
+    materialPriceHint.textContent = `Preço sugerido para ${materialName}. Ajuste para o valor pago.`;
   } else {
     materialPriceHint.textContent = "Informe o preço real do seu material por kg.";
   }

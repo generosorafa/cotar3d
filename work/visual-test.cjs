@@ -52,6 +52,10 @@ async function testViewport(browser, config) {
     resultHeight: document.querySelector("#quoteResults").getBoundingClientRect().height,
     primaryColumns: getComputedStyle(document.querySelector("#quoteForm fieldset .field-grid"))
       .gridTemplateColumns.split(" ").length,
+    primaryLabelColumns: getComputedStyle(document.querySelector("#quoteForm fieldset .field-grid label"))
+      .gridTemplateColumns.split(" ").length,
+    resultColumns: getComputedStyle(document.querySelector("#quoteResults .result-grid"))
+      .gridTemplateColumns.split(" ").length,
   }));
 
   await page.click("#openClientQuote");
@@ -177,6 +181,16 @@ async function testViewport(browser, config) {
   if (!config.mobile && layoutMetrics.primaryColumns !== 3) {
     failures.push(`formulario desktop com ${layoutMetrics.primaryColumns} colunas`);
   }
+  if (config.mobile && config.viewport.width > 350 && layoutMetrics.primaryLabelColumns !== 2) {
+    failures.push(`campos mobile sem respostas laterais: ${layoutMetrics.primaryLabelColumns} colunas`);
+  }
+  if (config.mobile && config.viewport.width <= 350 && layoutMetrics.primaryLabelColumns !== 1) {
+    failures.push(`campos estreitos deveriam voltar para uma coluna`);
+  }
+  const expectedResultColumns = config.mobile && config.viewport.width <= 350 ? 1 : 2;
+  if (layoutMetrics.resultColumns !== expectedResultColumns) {
+    failures.push(`grade de resultados com ${layoutMetrics.resultColumns} colunas`);
+  }
   if (!config.mobile && layoutMetrics.calculatorHeight > config.viewport.height - 130) {
     failures.push(`formulario desktop ainda muito alto: ${Math.round(layoutMetrics.calculatorHeight)}px`);
   }
@@ -198,6 +212,7 @@ async function testViewport(browser, config) {
     unitSummary,
     marginSummary,
     failureReserve,
+    layoutMetrics,
     activeAfterMetodo,
     screenshot,
     failures,
@@ -210,6 +225,7 @@ async function testViewport(browser, config) {
 
   for (const config of [
     { name: "desktop", viewport: { width: 1440, height: 1000 }, mobile: false },
+    { name: "mobile-wide", viewport: { width: 430, height: 932 }, mobile: true },
     { name: "mobile", viewport: { width: 390, height: 844 }, mobile: true },
     { name: "mobile-compact", viewport: { width: 320, height: 700 }, mobile: true },
   ]) {
@@ -220,7 +236,7 @@ async function testViewport(browser, config) {
 
   for (const result of results) {
     console.log(
-      `${result.name}: custo=${result.cost}; venda=${result.suggested}; margem=${result.marginSummary}; falha=${result.failureReserve}; nav=${result.activeAfterMetodo?.trim()}; screenshot=${result.screenshot}`
+      `${result.name}: custo=${result.cost}; venda=${result.suggested}; margem=${result.marginSummary}; formulario=${Math.round(result.layoutMetrics.calculatorHeight)}px; resultado=${Math.round(result.layoutMetrics.resultHeight)}px; nav=${result.activeAfterMetodo?.trim()}; screenshot=${result.screenshot}`
     );
     if (result.failures.length) {
       for (const failure of result.failures) console.error(`- ${result.name}: ${failure}`);

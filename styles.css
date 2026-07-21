@@ -582,8 +582,18 @@ h3 {
   line-height: 1.6;
 }
 
+.calculator-title-mobile,
+.calculator-copy-mobile {
+  display: none;
+}
+
 .mobile-price-strip {
   display: none;
+}
+
+.calculator-options,
+.result-secondary {
+  display: contents;
 }
 
 fieldset {
@@ -1690,9 +1700,13 @@ footer strong {
     height: 32px;
   }
 
-  .field-grid,
-  .result-grid {
+  .field-grid {
     grid-template-columns: 1fr;
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .wide-field {
@@ -1718,18 +1732,20 @@ footer strong {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin: 18px 0 4px;
+    min-height: 44px;
+    margin: 12px 0 4px;
     border: 1px solid rgba(9, 168, 111, 0.34);
-    border-radius: 12px;
+    border-radius: 10px;
     background: rgba(239, 251, 245, 0.96);
     box-shadow: 0 10px 28px rgba(20, 42, 36, 0.12);
-    padding: 11px 13px;
+    padding: 8px 11px;
     backdrop-filter: blur(10px);
   }
 
   .mobile-price-strip span {
-    display: grid;
-    gap: 2px;
+    display: flex;
+    gap: 7px;
+    align-items: baseline;
     color: var(--muted);
     font-size: 10px;
     font-weight: 800;
@@ -1738,7 +1754,7 @@ footer strong {
 
   .mobile-price-strip strong {
     color: #08704e;
-    font-size: 19px;
+    font-size: 17px;
     letter-spacing: 0;
   }
 
@@ -1749,7 +1765,7 @@ footer strong {
 
   .settings-details summary,
   .result-details summary {
-    min-height: 50px;
+    min-height: 48px;
   }
 
   .insights h3 {
@@ -1795,12 +1811,39 @@ footer strong {
     letter-spacing: 0.22em;
   }
 
+  .calculator-title-desktop,
+  .calculator-copy-desktop,
+  .calculator .section-heading .eyebrow {
+    display: none;
+  }
+
+  .calculator-title-mobile,
+  .calculator-copy-mobile {
+    display: inline;
+  }
+
+  .calculator .section-heading h2 {
+    font-size: 28px;
+    line-height: 1.05;
+  }
+
+  .calculator .section-heading p:not(.eyebrow) {
+    margin: 7px 0 0;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
   .problem-band,
   .steps-band,
-  .calculator-shell,
   .method-band {
     padding-top: 54px;
     padding-bottom: 58px;
+  }
+
+  .calculator-shell {
+    gap: 12px;
+    padding-top: 24px;
+    padding-bottom: 44px;
   }
 
   .section-kicker {
@@ -1809,11 +1852,164 @@ footer strong {
 
   .calculator,
   .result-panel {
-    padding: 20px;
+    padding: 18px;
+  }
+
+  .calculator > fieldset:first-of-type {
+    margin-top: 10px;
+  }
+
+  .calculator > fieldset:first-of-type > legend {
+    display: none;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid {
+    gap: 0;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid > label {
+    grid-template-columns: minmax(112px, 0.82fr) minmax(0, 1.18fr);
+    gap: 5px 10px;
+    align-items: center;
+    align-content: start;
+    border-bottom: 1px solid var(--line);
+    padding: 8px 0;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid > label:last-child {
+    border-bottom: 0;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid > label > input,
+  .calculator > fieldset:first-of-type .field-grid > label > select {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 44px;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid > label > .hint {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 10.5px;
+    line-height: 1.3;
+  }
+
+  .calculator .quick-presets {
+    gap: 6px;
+    margin-top: 9px;
+  }
+
+  .calculator .quick-presets > span {
+    display: none;
+  }
+
+  .calculator .quick-presets button {
+    min-height: 32px;
+    font-size: 10.5px;
+    padding-inline: 9px;
+  }
+
+  .calculator .settings-details {
+    margin-top: 12px;
+  }
+
+  .calculator .advanced-toggle {
+    margin-top: 13px;
+  }
+
+  .calculator-options {
+    display: grid;
+    grid-template-columns: minmax(0, 1.32fr) minmax(132px, 0.68fr);
+    gap: 8px;
+    align-items: stretch;
+    margin-top: 12px;
+  }
+
+  .calculator-options .settings-details,
+  .calculator-options .advanced-toggle {
+    margin-top: 0;
+  }
+
+  .calculator-options .advanced-toggle {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: rgba(248, 251, 248, 0.82);
+    padding: 9px;
+  }
+
+  .calculator-options .switch {
+    width: 100%;
+    gap: 7px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .calculator-options .track {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 24px;
+  }
+
+  .calculator-options .track::after {
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .calculator-options .switch input:checked + .track::after {
+    transform: translateX(18px);
+  }
+
+  .calculator-options .settings-details[open] {
+    grid-column: 1 / -1;
+  }
+
+  .calculator-options:has(.settings-details[open]) .advanced-toggle {
+    grid-column: 1 / -1;
+  }
+
+  .result-panel {
+    gap: 9px;
+  }
+
+  .result-secondary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .result-secondary .result-details {
+    min-width: 0;
+  }
+
+  .result-secondary .result-details summary {
+    height: 100%;
+    padding: 9px 10px;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  .result-secondary:has(.result-details[open]) {
+    grid-template-columns: 1fr;
   }
 
   .result-card {
-    min-height: 82px;
+    min-height: 84px;
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .result-card span {
+    font-size: 9px;
+  }
+
+  .result-card strong {
+    font-size: 20px;
   }
 
   .result-card.featured {
@@ -1821,7 +2017,7 @@ footer strong {
   }
 
   .result-card.featured strong {
-    font-size: 40px;
+    font-size: 38px;
   }
 
   .guide-items article {
@@ -1851,6 +2047,34 @@ footer strong {
   .step-cards article,
   .guide-summary article {
     border-radius: 18px;
+  }
+}
+
+@media (max-width: 350px) {
+  .calculator > fieldset:first-of-type .field-grid > label {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 5px;
+  }
+
+  .calculator > fieldset:first-of-type .field-grid > label > input,
+  .calculator > fieldset:first-of-type .field-grid > label > select,
+  .calculator > fieldset:first-of-type .field-grid > label > .hint {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calculator-options,
+  .result-secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .calculator-options .advanced-toggle {
+    grid-column: 1;
   }
 }
 

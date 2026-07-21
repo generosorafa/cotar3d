@@ -148,8 +148,14 @@
         <form class="calculator" id="quoteForm">
           <div class="section-heading">
             <p class="eyebrow">Calculadora</p>
-            <h2>Faça uma cotação em menos de 1 minuto</h2>
-            <p>Comece com quatro dados. Abra o modo completo quando quiser incluir mão de obra, frete, taxas e perdas.</p>
+            <h2>
+              <span class="calculator-title-desktop">Faça uma cotação em menos de 1 minuto</span>
+              <span class="calculator-title-mobile">Nova cotação</span>
+            </h2>
+            <p>
+              <span class="calculator-copy-desktop">Comece com quatro dados. Abra o modo completo quando quiser incluir mão de obra, frete, taxas e perdas.</span>
+              <span class="calculator-copy-mobile">Use os dados do slicer. Custos completos são opcionais.</span>
+            </p>
           </div>
 
           <a class="mobile-price-strip" href="#quoteResults">
@@ -165,9 +171,9 @@
                 <input name="jobName" type="text" value="Suporte personalizado" autocomplete="off">
               </label>
               <label>
-                Quantidade de peças
+                Quantidade
                 <input name="quantity" type="number" min="1" step="1" value="1" inputmode="numeric">
-                <span class="hint">Use o consumo e o tempo do lote inteiro informado pelo slicer.</span>
+                <span class="hint">Use o consumo e o tempo do lote inteiro.</span>
               </label>
               <label>
                 Material
@@ -182,23 +188,23 @@
                 </select>
               </label>
               <label>
-                Preço do kg do material (R$)
+                Preço do kg (R$)
                 <input name="materialKgPrice" type="number" min="0" step="0.01" value="95">
-                <span class="hint" id="materialPriceHint">Preset editável para PLA. Ajuste para o preço que você realmente pagou.</span>
+                <span class="hint" id="materialPriceHint">Preço sugerido para PLA. Ajuste para o valor pago.</span>
               </label>
               <label class="wide-field">
-                Material consumido pelo slicer (g)
+                Consumo do slicer (g)
                 <input name="consumedGrams" type="number" min="0" step="0.1" value="85">
-                <span class="hint">Use o total exibido no Bambu Studio, Orca, PrusaSlicer ou Cura. Inclui peça, suporte, torre, purga, brim e raft.</span>
+                <span class="hint">Inclua peça, suportes, torre, purga, brim e raft.</span>
               </label>
               <label>
-                Tempo de impressão (horas)
+                Tempo de impressão (h)
                 <input name="printHours" type="number" min="0" step="0.1" value="6.5">
               </label>
               <label>
-                Acréscimo sobre o custo (%)
+                Acréscimo no custo (%)
                 <input name="marginPercent" type="number" min="0" step="1" value="45">
-                <span class="hint">Exemplo: 45% acrescenta R$ 45 a cada R$ 100 de custo.</span>
+                <span class="hint">45% soma R$ 45 a cada R$ 100 de custo.</span>
               </label>
             </div>
             <div class="quick-presets" aria-label="Presets rápidos de acréscimo">
@@ -209,48 +215,50 @@
             </div>
           </fieldset>
 
-          <details class="settings-details">
-            <summary>
-              <span>Impressora e energia</span>
-              <small id="printerSettingsSummary">Bambu Lab P1S · 145 W · R$ 0,95/kWh</small>
-            </summary>
-            <fieldset>
-              <legend class="visually-hidden">Impressora e energia</legend>
-              <div class="field-grid">
-              <label>
-                Impressora
-                <select name="printer" id="printerSelect">
-                  <option value="95">Bambu Lab A1 Mini - estimado 95 W</option>
-                  <option value="115">Bambu Lab A1 - estimado 115 W</option>
-                  <option value="135">Bambu Lab P1P - estimado 135 W</option>
-                  <option value="145" selected>Bambu Lab P1S - estimado 145 W</option>
-                  <option value="155">Bambu Lab X1 Carbon - estimado 155 W</option>
-                  <option value="custom">Personalizada</option>
-                </select>
-              </label>
-              <label>
-                Consumo médio (W)
-                <input name="averageWatts" id="averageWatts" type="number" min="0" step="1" value="145">
-                <span class="hint">Valor estimado. Para precisão real, use medidor de tomada.</span>
-              </label>
-              <label>
-                Tarifa de energia (R$/kWh)
-                <input name="energyRate" type="number" min="0" step="0.01" value="0.95">
-              </label>
-              <label>
-                Desgaste da impressora (R$/h)
-                <input name="machineHourCost" type="number" min="0" step="0.01" value="1.20">
-              </label>
-              </div>
-            </fieldset>
-          </details>
+          <div class="calculator-options">
+            <details class="settings-details">
+              <summary>
+                <span>Impressora e energia</span>
+                <small id="printerSettingsSummary">Bambu Lab P1S · 145 W · R$ 0,95/kWh</small>
+              </summary>
+              <fieldset>
+                <legend class="visually-hidden">Impressora e energia</legend>
+                <div class="field-grid">
+                <label>
+                  Impressora
+                  <select name="printer" id="printerSelect">
+                    <option value="95">Bambu Lab A1 Mini - estimado 95 W</option>
+                    <option value="115">Bambu Lab A1 - estimado 115 W</option>
+                    <option value="135">Bambu Lab P1P - estimado 135 W</option>
+                    <option value="145" selected>Bambu Lab P1S - estimado 145 W</option>
+                    <option value="155">Bambu Lab X1 Carbon - estimado 155 W</option>
+                    <option value="custom">Personalizada</option>
+                  </select>
+                </label>
+                <label>
+                  Consumo médio (W)
+                  <input name="averageWatts" id="averageWatts" type="number" min="0" step="1" value="145">
+                  <span class="hint">Valor estimado. Para precisão real, use medidor de tomada.</span>
+                </label>
+                <label>
+                  Tarifa de energia (R$/kWh)
+                  <input name="energyRate" type="number" min="0" step="0.01" value="0.95">
+                </label>
+                <label>
+                  Desgaste da impressora (R$/h)
+                  <input name="machineHourCost" type="number" min="0" step="0.01" value="1.20">
+                </label>
+                </div>
+              </fieldset>
+            </details>
 
-          <div class="advanced-toggle">
-            <label class="switch">
-              <input type="checkbox" id="advancedToggle">
-              <span class="track"></span>
-              <span>Ativar custos completos</span>
-            </label>
+            <div class="advanced-toggle">
+              <label class="switch">
+                <input type="checkbox" id="advancedToggle">
+                <span class="track"></span>
+                <span>Modo completo</span>
+              </label>
+            </div>
           </div>
 
           <fieldset class="advanced" id="advancedFields">
@@ -328,32 +336,34 @@
             </div>
           </div>
 
-          <details class="result-details">
-            <summary>Como interpretar o valor</summary>
-            <div class="result-guide" aria-label="Como interpretar a cotação">
-              <div class="guide-items">
-                <article>
-                  <b>Mínimo</b>
-                  <p>É o piso para não absorver custo. Use como alerta, não como preço de venda.</p>
-                </article>
-                <article>
-                  <b>Sugerido</b>
-                  <p>É o valor com acréscimo sobre o custo e taxas informadas.</p>
-                </article>
-                <article>
-                  <b>Por hora</b>
-                  <p>Mostra se a peça compensa o tempo ocupado na impressora.</p>
-                </article>
+          <div class="result-secondary">
+            <details class="result-details">
+              <summary>Como interpretar o valor</summary>
+              <div class="result-guide" aria-label="Como interpretar a cotação">
+                <div class="guide-items">
+                  <article>
+                    <b>Mínimo</b>
+                    <p>É o piso para não absorver custo. Use como alerta, não como preço de venda.</p>
+                  </article>
+                  <article>
+                    <b>Sugerido</b>
+                    <p>É o valor com acréscimo sobre o custo e taxas informadas.</p>
+                  </article>
+                  <article>
+                    <b>Por hora</b>
+                    <p>Mostra se a peça compensa o tempo ocupado na impressora.</p>
+                  </article>
+                </div>
               </div>
-            </div>
-          </details>
+            </details>
 
-          <details class="result-details">
-            <summary>Detalhamento do custo</summary>
-            <div class="breakdown">
-              <ul id="breakdownList"></ul>
-            </div>
-          </details>
+            <details class="result-details">
+              <summary>Detalhamento do custo</summary>
+              <div class="breakdown">
+                <ul id="breakdownList"></ul>
+              </div>
+            </details>
+          </div>
 
           <details class="result-details insights-details" id="insightDetails">
             <summary>
