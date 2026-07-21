@@ -6,6 +6,11 @@
       ".firebaserc",
       ".firebaserc.example",
       "README.md",
+      "package.json",
+      "package-lock.json",
+      "work/**",
+      "assets/brand/cotar3d-readme-cover.svg",
+      "assets/brand/cotar3d-product-preview.png",
       "**/.*",
       "**/node_modules/**"
     ],
@@ -13,7 +18,25 @@
     "trailingSlash": false,
     "headers": [
       {
-        "source": "**/*.@(html|css|js|json|xml|txt|webmanifest)",
+        "source": "/sw.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(html|css|json|xml|txt|webmanifest)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=300"
+          }
+        ]
+      },
+      {
+        "source": "/js/**",
         "headers": [
           {
             "key": "Cache-Control",

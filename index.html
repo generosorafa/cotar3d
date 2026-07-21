@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Cotar3D calcula custo real, lucro e preco de venda para impressao 3D usando o consumo total do slicer.">
+    <meta name="description" content="Cotar3D calcula custo real, lucro e preço de venda para impressão 3D usando o consumo total do slicer.">
     <meta name="theme-color" content="#f6f8f4">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Cotar3D | Precifique impressão 3D sem vender no prejuízo">
@@ -11,16 +11,23 @@
     <meta property="og:url" content="https://cotar3d.web.app/">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Cotar3D">
+    <meta property="og:image" content="https://cotar3d.web.app/assets/brand/cotar3d-social-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1728">
+    <meta property="og:image:height" content="909">
+    <meta property="og:image:alt" content="Cotar3D: transforme horas de impressão em preço justo">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Cotar3D | Precifique impressão 3D sem vender no prejuízo">
-    <meta name="twitter:description" content="Use o consumo total do slicer, energia, desgaste, perdas, taxas e margem para calcular quanto cobrar.">
-    <title>Cotar3D | Precifique impressao 3D sem vender no prejuizo</title>
+    <meta name="twitter:description" content="Use o consumo total do slicer, energia, desgaste, perdas, taxas e acréscimo para calcular quanto cobrar.">
+    <meta name="twitter:image" content="https://cotar3d.web.app/assets/brand/cotar3d-social-card.png">
+    <title>Cotar3D | Precifique impressão 3D sem vender no prejuízo</title>
     <link rel="canonical" href="https://cotar3d.web.app/">
     <link rel="icon" type="image/svg+xml" href="./assets/brand/cotar3d-app-icon.svg">
+    <link rel="apple-touch-icon" href="./assets/brand/cotar3d-icon-192.png">
     <link rel="manifest" href="./site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=JetBrains+Mono:wght@500..700&family=Sora:wght@600..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
@@ -32,8 +39,8 @@
       <nav class="nav" aria-label="Navegacao principal">
         <a href="#calculadora" data-nav-target="calculadora">Calcular</a>
         <a href="./como-calcular-preco-impressao-3d.html">Guia</a>
-        <a href="#metodo" data-nav-target="metodo">Método</a>
-        <a href="#pro" data-nav-target="pro">Pro</a>
+        <a class="nav-secondary" href="#metodo" data-nav-target="metodo">Método</a>
+        <a class="nav-secondary" href="#pro" data-nav-target="pro">Pro</a>
       </nav>
     </header>
 
@@ -63,7 +70,7 @@
           <div class="price-line">
             <span>🏷 Preço sugerido</span>
             <strong>R$ 58,40</strong>
-            <small>45% de margem desejada</small>
+            <small>45% de acréscimo sobre o custo</small>
           </div>
           <div class="cascade">
             <div><span>Material total do slicer</span><b>- R$ 8,08</b></div>
@@ -145,6 +152,11 @@
             <p>Comece com quatro dados. Abra o modo completo quando quiser incluir mão de obra, frete, taxas e perdas.</p>
           </div>
 
+          <a class="mobile-price-strip" href="#quoteResults">
+            <span>Preço sugerido <strong id="mobileSuggestedPrice">R$ 0,00</strong></span>
+            <b>Ver resultado</b>
+          </a>
+
           <fieldset>
             <legend>Dados principais</legend>
             <div class="field-grid">
@@ -184,21 +196,27 @@
                 <input name="printHours" type="number" min="0" step="0.1" value="6.5">
               </label>
               <label>
-                Margem desejada (%)
+                Acréscimo sobre o custo (%)
                 <input name="marginPercent" type="number" min="0" step="1" value="45">
+                <span class="hint">Exemplo: 45% acrescenta R$ 45 a cada R$ 100 de custo.</span>
               </label>
             </div>
-            <div class="quick-presets" aria-label="Presets rápidos de margem">
-              <span>Margem rápida</span>
-              <button type="button" data-margin="30">30% básica</button>
-              <button type="button" data-margin="45">45% equilibrada</button>
+            <div class="quick-presets" aria-label="Presets rápidos de acréscimo">
+              <span>Acréscimo rápido</span>
+              <button type="button" data-margin="30">30% básico</button>
+              <button type="button" data-margin="45">45% equilibrado</button>
               <button type="button" data-margin="65">65% sob encomenda</button>
             </div>
           </fieldset>
 
-          <fieldset>
-            <legend>Impressora e energia</legend>
-            <div class="field-grid">
+          <details class="settings-details">
+            <summary>
+              <span>Impressora e energia</span>
+              <small id="printerSettingsSummary">Bambu Lab P1S · 145 W · R$ 0,95/kWh</small>
+            </summary>
+            <fieldset>
+              <legend class="visually-hidden">Impressora e energia</legend>
+              <div class="field-grid">
               <label>
                 Impressora
                 <select name="printer" id="printerSelect">
@@ -223,8 +241,9 @@
                 Desgaste da impressora (R$/h)
                 <input name="machineHourCost" type="number" min="0" step="0.01" value="1.20">
               </label>
-            </div>
-          </fieldset>
+              </div>
+            </fieldset>
+          </details>
 
           <div class="advanced-toggle">
             <label class="switch">
@@ -239,7 +258,8 @@
             <div class="field-grid">
               <label>
                 Taxa de falha/perda (%)
-                <input name="failurePercent" type="number" min="0" step="1" value="8">
+                <input name="failurePercent" type="number" min="0" max="100" step="1" value="8">
+                <span class="hint">Aplicada a material, energia e desgaste que precisam ser repetidos.</span>
               </label>
               <label>
                 Embalagem e etiqueta (R$)
@@ -259,7 +279,7 @@
               </label>
               <label>
                 Taxas/impostos (%)
-                <input name="taxPercent" type="number" min="0" step="0.1" value="0">
+                <input name="taxPercent" type="number" min="0" max="99" step="0.1" value="0">
                 <span class="hint">Informe sua própria taxa. Não é orientação fiscal.</span>
               </label>
               <label>
@@ -274,11 +294,12 @@
           </fieldset>
         </form>
 
-        <aside class="result-panel" aria-live="polite">
+        <aside class="result-panel" id="quoteResults" aria-live="polite">
           <div class="result-card featured">
             <span>Preço sugerido do pedido</span>
             <strong id="suggestedPrice">R$ 0,00</strong>
             <small id="unitPriceSummary">1 peça · R$ 0,00 por peça</small>
+            <small id="marginSummary">Margem real no preço: 0%</small>
           </div>
           <div class="result-grid">
             <div class="result-card">
@@ -307,28 +328,32 @@
             </div>
           </div>
 
-          <div class="result-guide" aria-label="Como interpretar a cotação">
-            <h3>Como usar este valor</h3>
-            <div class="guide-items">
-              <article>
-                <b>Mínimo</b>
-                <p>É o piso para não absorver custo. Use como alerta, não como preço de venda.</p>
-              </article>
-              <article>
-                <b>Sugerido</b>
-                <p>É o valor com margem e taxas informadas. Comece por ele ao passar orçamento.</p>
-              </article>
-              <article>
-                <b>Por hora</b>
-                <p>Mostra se a peça compensa o tempo ocupado na impressora.</p>
-              </article>
+          <details class="result-details">
+            <summary>Como interpretar o valor</summary>
+            <div class="result-guide" aria-label="Como interpretar a cotação">
+              <div class="guide-items">
+                <article>
+                  <b>Mínimo</b>
+                  <p>É o piso para não absorver custo. Use como alerta, não como preço de venda.</p>
+                </article>
+                <article>
+                  <b>Sugerido</b>
+                  <p>É o valor com acréscimo sobre o custo e taxas informadas.</p>
+                </article>
+                <article>
+                  <b>Por hora</b>
+                  <p>Mostra se a peça compensa o tempo ocupado na impressora.</p>
+                </article>
+              </div>
             </div>
-          </div>
+          </details>
 
-          <div class="breakdown">
-            <h3>Detalhamento do custo</h3>
-            <ul id="breakdownList"></ul>
-          </div>
+          <details class="result-details">
+            <summary>Detalhamento do custo</summary>
+            <div class="breakdown">
+              <ul id="breakdownList"></ul>
+            </div>
+          </details>
 
           <div class="insights">
             <h3>Alertas da cotação</h3>
@@ -370,7 +395,7 @@
             <b>3</b>
             <div>
               <h3>Venda</h3>
-              <p>Margem desejada e taxas informadas por você para chegar no preço final.</p>
+              <p>Acréscimo sobre o custo e taxas informadas por você para chegar no preço final.</p>
             </div>
           </article>
         </div>
@@ -413,6 +438,7 @@
         <div class="client-quote-heading">
           <p>Orçamento</p>
           <h2 id="clientQuoteTitle"><span id="clientQuoteJob">Peça sem nome</span></h2>
+          <span class="client-quote-date" id="clientQuoteDate">Gerado em --/--/----</span>
         </div>
 
         <dl class="client-quote-details">
@@ -425,6 +451,11 @@
             <dd id="clientQuoteQuantity">1 peça</dd>
           </div>
         </dl>
+
+        <label class="client-quote-seller">
+          Seu nome ou negócio (opcional)
+          <input id="clientQuoteSeller" type="text" maxlength="80" placeholder="Ex.: Estúdio 3D" autocomplete="organization">
+        </label>
 
         <div class="client-quote-total">
           <span>Valor total</span>
@@ -455,7 +486,7 @@
         "featureList": [
           "Cálculo de custo de material por consumo do slicer",
           "Estimativa de energia, desgaste, falhas e mão de obra",
-          "Preço sugerido com margem e taxas informadas",
+          "Preço sugerido com acréscimo sobre o custo e taxas informadas",
           "Orçamento limpo para compartilhar com o cliente"
         ],
         "offers": {

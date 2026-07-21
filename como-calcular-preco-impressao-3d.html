@@ -17,7 +17,7 @@
     <link rel="canonical" href="https://cotar3d.web.app/como-calcular-preco-impressao-3d.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=JetBrains+Mono:wght@500..700&family=Sora:wght@600..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
@@ -29,8 +29,8 @@
       <nav class="nav" aria-label="Navegação principal">
         <a href="./index.html#calculadora">Calcular</a>
         <a href="./como-calcular-preco-impressao-3d.html" aria-current="page">Guia</a>
-        <a href="./index.html#metodo">Método</a>
-        <a href="./index.html#pro">Pro</a>
+        <a class="nav-secondary" href="./index.html#metodo">Método</a>
+        <a class="nav-secondary" href="./index.html#pro">Pro</a>
       </nav>
     </header>
 
@@ -55,8 +55,8 @@
         </article>
         <article>
           <b>Venda</b>
-          <h2>Margem e taxas</h2>
-          <p>Depois do custo real, aplique margem e taxas para chegar em um preço defensável.</p>
+          <h2>Acréscimo e taxas</h2>
+          <p>Depois do custo real, defina o acréscimo sobre o custo e confira a margem real no preço.</p>
         </article>
       </section>
 
@@ -76,14 +76,15 @@
         <p>Preparar arquivo, retirar suporte, limpar, lixar, embalar e conversar com o cliente também tem custo. Para peças simples, esse valor pode ser baixo. Para encomendas personalizadas, ele pode ser decisivo.</p>
 
         <h2>5. Reserve uma taxa de falha</h2>
-        <p>Impressão 3D tem erro, retrabalho e desperdício. Uma reserva de falha ajuda a diluir perdas ao longo dos pedidos.</p>
+        <p>Impressão 3D tem erro, retrabalho e desperdício. No Cotar3D, a reserva incide sobre material, energia e desgaste, que precisam ser repetidos quando uma impressão falha.</p>
 
-        <h2>6. Aplique taxas e margem na ordem certa</h2>
-        <p>Taxas e impostos devem aparecer de forma transparente. A margem precisa ser aplicada depois que os custos reais estão definidos, para que o lucro não seja confundido com faturamento.</p>
+        <h2>6. Aplique acréscimo e taxas na ordem certa</h2>
+        <p>O campo “Acréscimo sobre o custo” informa quanto será adicionado ao custo real. Se o custo for R$ 100 e o acréscimo for 45%, o preço antes das taxas será R$ 145. Nesse exemplo, a margem real sobre o preço é de aproximadamente 31%.</p>
+        <p>Taxas e impostos são embutidos depois, para que o lucro não seja confundido com faturamento.</p>
 
         <h2>Resumo da fórmula</h2>
         <p><strong>Custo real</strong> = material + energia + desgaste + mão de obra + embalagem + frete + reserva de falha.</p>
-        <p><strong>Preço sugerido</strong> = custo real com margem e taxas informadas.</p>
+        <p><strong>Preço sugerido</strong> = custo real + acréscimo sobre o custo + taxas informadas.</p>
 
         <h2>Quando revisar o preço</h2>
         <p>Revise sua cotação sempre que mudar preço do filamento, tarifa de energia, tempo de impressão, taxa de falha, material, máquina ou forma de venda.</p>
@@ -93,8 +94,8 @@
         <p>Use o consumo total do slicer para calcular custo. O peso da peça pronta pode ajudar a entender perda técnica, mas não representa tudo que você pagou para imprimir.</p>
         <h3>Posso cobrar só por grama?</h3>
         <p>É simples, mas costuma esconder energia, desgaste, mão de obra, falhas, embalagem e tempo de máquina. O preço por grama pode ser uma referência, não a conta completa.</p>
-        <h3>Qual margem usar?</h3>
-        <p>Depende do tipo de peça, urgência, acabamento, complexidade e canal de venda. Como ponto inicial, teste margens entre 30% e 65% e acompanhe lucro por hora.</p>
+        <h3>Qual acréscimo sobre o custo usar?</h3>
+        <p>Depende do tipo de peça, urgência, acabamento, complexidade e canal de venda. Como ponto inicial, teste acréscimos entre 30% e 65% e acompanhe a margem real e o lucro por hora.</p>
       </article>
     </main>
 
@@ -146,10 +147,10 @@
           },
           {
             "@type": "Question",
-            "name": "Qual margem usar em impressão 3D?",
+            "name": "Qual acréscimo sobre o custo usar em impressão 3D?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "A margem depende da peça, urgência, acabamento, complexidade e canal de venda. Como início, teste margens entre 30% e 65% e acompanhe lucro por hora."
+              "text": "O acréscimo depende da peça, urgência, acabamento, complexidade e canal de venda. Como início, teste percentuais entre 30% e 65% e acompanhe a margem real e o lucro por hora."
             }
           }
         ]

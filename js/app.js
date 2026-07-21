@@ -15,10 +15,13 @@ const clientQuoteDialog = document.querySelector("#clientQuoteDialog");
 const closeClientQuote = document.querySelector("#closeClientQuote");
 const copyClientQuote = document.querySelector("#copyClientQuote");
 const printClientQuote = document.querySelector("#printClientQuote");
+const clientQuoteSeller = document.querySelector("#clientQuoteSeller");
 
 const output = {
   suggestedPrice: document.querySelector("#suggestedPrice"),
+  mobileSuggestedPrice: document.querySelector("#mobileSuggestedPrice"),
   unitPriceSummary: document.querySelector("#unitPriceSummary"),
+  marginSummary: document.querySelector("#marginSummary"),
   totalCost: document.querySelector("#totalCost"),
   minimumPrice: document.querySelector("#minimumPrice"),
   profitValue: document.querySelector("#profitValue"),
@@ -35,7 +38,9 @@ const output = {
   clientQuoteQuantity: document.querySelector("#clientQuoteQuantity"),
   clientQuoteTotal: document.querySelector("#clientQuoteTotal"),
   clientQuoteUnit: document.querySelector("#clientQuoteUnit"),
+  clientQuoteDate: document.querySelector("#clientQuoteDate"),
   clientQuoteStatus: document.querySelector("#clientQuoteStatus"),
+  printerSettingsSummary: document.querySelector("#printerSettingsSummary"),
 };
 
 const localDefaultsKey = "cotar3d-defaults-v1";
@@ -60,10 +65,19 @@ const currency = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
 });
+const percentage = new Intl.NumberFormat("pt-BR", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+const shortDate = new Intl.DateTimeFormat("pt-BR");
 
 function numberFrom(formData, key) {
   const value = Number.parseFloat(String(formData.get(key)).replace(",", "."));
   return Number.isFinite(value) ? value : 0;
+}
+
+function nonNegativeFrom(formData, key) {
+  return Math.max(0, numberFrom(formData, key));
 }
 
 function money(value) {
@@ -94,7 +108,7 @@ function buildInsights({
   consumedGrams,
   materialKgPriceValue,
   printHours,
-  marginPercent,
+  markupPercent,
   useAdvanced,
   failurePercent,
   taxPercent,
@@ -124,12 +138,12 @@ function buildInsights({
     insights.push(["warning", "Taxa de falha zerada pode esconder perda real de material e tempo."]);
   }
 
-  if (marginPercent < 20) {
-    insights.push(["warning", "Margem abaixo de 20% pode ficar apertada se houver retrabalho ou negociação."]);
+  if (markupPercent < 20) {
+    insights.push(["warning", "Acréscimo abaixo de 20% pode ficar apertado se houver retrabalho ou negociação."]);
   }
 
-  if (taxPercent >= 100) {
-    insights.push(["danger", "Taxas/impostos acima de 100% deixam o preço sugerido inconsistente."]);
+  if (taxPercent >= 80) {
+    insights.push(["danger", "Taxas/impostos muito altos elevam bastante o preço. Confira o percentual informado."]);
   } else if (taxPercent > 0) {
     insights.push(["neutral", "Taxas/impostos foram embutidos no preço sugerido e aparecem no detalhamento."]);
   }
@@ -152,23 +166,23 @@ function buildInsights({
 function calculateQuote() {
   const data = new FormData(form);
 
-  const consumedGrams = numberFrom(data, "consumedGrams");
-  const materialKgPriceValue = numberFrom(data, "materialKgPrice");
-  const quantity = Math.max(1, Math.floor(numberFrom(data, "quantity") || 1));
-  const printHours = numberFrom(data, "printHours");
-  const marginPercent = numberFrom(data, "marginPercent");
-  const watts = numberFrom(data, "averageWatts");
-  const energyRate = numberFrom(data, "energyRate");
-  const machineHourCost = numberFrom(data, "machineHourCost");
+  const consumedGrams = nonNegativeFrom(data, "consumedGrams");
+  const materialKgPriceValue = nonNegativeFrom(data, "materialKgPrice");
+  const quantity = Math.max(1, Math.floor(nonNegativeFrom(data, "quantity") || 1));
+  const printHours = nonNegativeFrom(data, "printHours");
+  const markupPercent = nonNegativeFrom(data, "marginPercent");
+  const watts = nonNegativeFrom(data, "averageWatts");
+  const energyRate = nonNegativeFrom(data, "energyRate");
+  const machineHourCost = nonNegativeFrom(data, "machineHourCost");
   const useAdvanced = advancedToggle.checked;
-  const failurePercent = useAdvanced ? numberFrom(data, "failurePercent") : 0;
-  const packagingCost = useAdvanced ? numberFrom(data, "packagingCost") : 0;
-  const extraSupplies = useAdvanced ? numberFrom(data, "extraSupplies") : 0;
-  const laborMinutes = useAdvanced ? numberFrom(data, "laborMinutes") : 0;
-  const hourlyRate = useAdvanced ? numberFrom(data, "hourlyRate") : 0;
-  const taxPercent = useAdvanced ? numberFrom(data, "taxPercent") : 0;
-  const shippingCost = useAdvanced ? numberFrom(data, "shippingCost") : 0;
-  const finalPartGrams = useAdvanced ? numberFrom(data, "finalPartGrams") : 0;
+  const failurePercent = useAdvanced ? Math.min(100, nonNegativeFrom(data, "failurePercent")) : 0;
+  const packagingCost = useAdvanced ? nonNegativeFrom(data, "packagingCost") : 0;
+  const extraSupplies = useAdvanced ? nonNegativeFrom(data, "extraSupplies") : 0;
+  const laborMinutes = useAdvanced ? nonNegativeFrom(data, "laborMinutes") : 0;
+  const hourlyRate = useAdvanced ? nonNegativeFrom(data, "hourlyRate") : 0;
+  const taxPercent = useAdvanced ? Math.min(99, nonNegativeFrom(data, "taxPercent")) : 0;
+  const shippingCost = useAdvanced ? nonNegativeFrom(data, "shippingCost") : 0;
+  const finalPartGrams = useAdvanced ? nonNegativeFrom(data, "finalPartGrams") : 0;
 
   const materialCost = (consumedGrams / 1000) * materialKgPriceValue;
   const energyCost = (watts / 1000) * printHours * energyRate;
@@ -182,11 +196,12 @@ function calculateQuote() {
     extraSupplies +
     laborCost +
     shippingCost;
-  const failureCost = baseCost * (failurePercent / 100);
+  const repeatableProductionCost = materialCost + energyCost + machineCost;
+  const failureCost = repeatableProductionCost * (failurePercent / 100);
   const totalCost = baseCost + failureCost;
   const minimumPrice = totalCost;
-  const marginPrice = totalCost * (1 + marginPercent / 100);
-  const suggestedPrice = taxPercent >= 100 ? marginPrice : marginPrice / (1 - taxPercent / 100);
+  const markupPrice = totalCost * (1 + markupPercent / 100);
+  const suggestedPrice = markupPrice / (1 - taxPercent / 100);
   const taxCost = suggestedPrice * (taxPercent / 100);
   const profitValue = suggestedPrice - totalCost - taxCost;
   const profitPerHour = printHours > 0 ? profitValue / printHours : 0;
@@ -195,7 +210,12 @@ function calculateQuote() {
   const unitPrice = suggestedPrice / quantity;
 
   output.suggestedPrice.textContent = money(suggestedPrice);
+  output.mobileSuggestedPrice.textContent = money(suggestedPrice);
   output.unitPriceSummary.textContent = `${quantityLabel(quantity)} · ${money(unitPrice)} por peça`;
+  output.marginSummary.textContent = `Margem real no preço: ${percentage.format(realMargin)}%`;
+  const printerLabel = printerSelect.selectedOptions?.[0]?.textContent
+    ?.replace(/\s+-\s+estimado.*$/i, "") || "Personalizada";
+  output.printerSettingsSummary.textContent = `${printerLabel} · ${Math.round(watts)} W · ${money(energyRate)}/kWh`;
   output.totalCost.textContent = money(totalCost);
   output.minimumPrice.textContent = money(minimumPrice);
   output.profitValue.textContent = money(profitValue);
@@ -220,7 +240,7 @@ function calculateQuote() {
     ["Desgaste da impressora", machineCost],
     ["Mao de obra", laborCost],
     ["Embalagem, insumos e frete", packagingCost + extraSupplies + shippingCost],
-    ["Reserva por falha", failureCost],
+    ["Reserva para repetir impressão", failureCost],
     ["Taxas/impostos", taxCost],
   ];
 
@@ -232,7 +252,7 @@ function calculateQuote() {
     consumedGrams,
     materialKgPriceValue,
     printHours,
-    marginPercent,
+    markupPercent,
     useAdvanced,
     failurePercent,
     taxPercent,
@@ -259,6 +279,8 @@ function calculateQuote() {
     profitPerHour,
     taxCost,
     printHours,
+    markupPercent,
+    realMargin,
   };
 }
 
@@ -304,6 +326,8 @@ function copyQuoteSummary() {
     `Preco minimo: ${money(quote.minimumPrice)}`,
     `Preco sugerido: ${money(quote.suggestedPrice)}`,
     `Preco por peca: ${money(quote.unitPrice)}`,
+    `Acrescimo sobre o custo: ${percentage.format(quote.markupPercent)}%`,
+    `Margem real no preco: ${percentage.format(quote.realMargin)}%`,
     `Taxas/impostos: ${money(quote.taxCost)}`,
     `Lucro estimado: ${money(quote.profitValue)}`,
     `Lucro por hora: ${money(quote.profitPerHour)}`,
@@ -389,7 +413,11 @@ function updateClientQuote() {
   output.clientQuoteQuantity.textContent = quantityLabel(quote.quantity);
   output.clientQuoteTotal.textContent = money(quote.suggestedPrice);
   output.clientQuoteUnit.textContent = `${money(quote.unitPrice)} por peça`;
+  output.clientQuoteDate.textContent = `Gerado em ${shortDate.format(new Date())}`;
   output.clientQuoteStatus.textContent = "";
+  copyClientQuote.textContent = typeof navigator.share === "function"
+    ? "Compartilhar orçamento"
+    : "Copiar orçamento";
 
   return quote;
 }
@@ -419,17 +447,42 @@ function hideClientQuote() {
   }
 }
 
-function copyClientQuoteText() {
-  const quote = updateClientQuote();
-  const text = [
+function buildClientQuoteText(quote) {
+  const seller = clientQuoteSeller.value.trim();
+  const lines = [
     "ORÇAMENTO DE IMPRESSÃO 3D",
+    `Data: ${shortDate.format(new Date())}`,
     quote.jobName,
     `Material: ${quote.material}`,
     `Quantidade: ${quantityLabel(quote.quantity)}`,
     `Valor por peça: ${money(quote.unitPrice)}`,
     `Valor total: ${money(quote.suggestedPrice)}`,
     "Prazo, acabamento, frete e condições de pagamento devem ser confirmados antes da produção.",
-  ].join("\n");
+  ];
+
+  if (seller) lines.splice(2, 0, `Responsável: ${seller}`);
+
+  return lines.join("\n");
+}
+
+async function shareClientQuoteText() {
+  const quote = updateClientQuote();
+  const text = buildClientQuoteText(quote);
+
+  if (typeof navigator.share === "function") {
+    try {
+      await navigator.share({
+        title: `Orçamento - ${quote.jobName}`,
+        text,
+      });
+      output.clientQuoteStatus.textContent = "Orçamento compartilhado.";
+    } catch (error) {
+      if (error?.name !== "AbortError") {
+        output.clientQuoteStatus.textContent = "Não foi possível abrir o compartilhamento.";
+      }
+    }
+    return;
+  }
 
   if (!navigator.clipboard) {
     output.clientQuoteStatus.textContent = "Copiar automaticamente não está disponível neste navegador.";
@@ -470,7 +523,7 @@ copySummary.addEventListener("click", copyQuoteSummary);
 saveDefaults.addEventListener("click", saveLocalDefaults);
 openClientQuote.addEventListener("click", showClientQuote);
 closeClientQuote.addEventListener("click", hideClientQuote);
-copyClientQuote.addEventListener("click", copyClientQuoteText);
+copyClientQuote.addEventListener("click", shareClientQuoteText);
 printClientQuote.addEventListener("click", () => window.print());
 clientQuoteDialog.addEventListener("click", (event) => {
   if (event.target === clientQuoteDialog) hideClientQuote();
@@ -481,3 +534,9 @@ loadLocalDefaults();
 toggleAdvanced();
 calculateQuote();
 updateActiveSectionNav();
+
+if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}

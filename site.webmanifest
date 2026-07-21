@@ -1,17 +1,38 @@
 {
   "name": "Cotar3D",
   "short_name": "Cotar3D",
+  "id": "./",
   "description": "Calculadora de custo e preço de venda para impressão 3D.",
-  "start_url": "./index.html",
+  "start_url": "./#calculadora",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f6f8f4",
   "theme_color": "#09a86f",
   "icons": [
     {
+      "src": "./assets/brand/cotar3d-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/brand/cotar3d-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
       "src": "./assets/brand/cotar3d-app-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nova cotação",
+      "short_name": "Calcular",
+      "url": "./#calculadora"
     }
   ],
   "lang": "pt-BR",
