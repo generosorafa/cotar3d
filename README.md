@@ -83,6 +83,7 @@ Para executar os testes localmente:
 npm install
 npx playwright install chromium
 npm test
+npm run test:pwa
 ```
 
 ---
