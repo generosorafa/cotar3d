@@ -614,6 +614,49 @@ h3 {
   display: none;
 }
 
+.calculator-heading-row {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.calculator-heading-row .section-heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.new-quote-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 7px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  padding: 0 12px;
+}
+
+.new-quote-button:hover {
+  border-color: rgba(9, 168, 111, 0.5);
+  color: var(--mint-2);
+}
+
+.new-quote-button span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.new-quote-button b {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
 .mobile-price-strip {
   display: none;
 }
@@ -644,7 +687,8 @@ legend {
 }
 
 .settings-details summary,
-.result-details summary {
+.result-details summary,
+.cost-group summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px 16px;
@@ -657,12 +701,14 @@ legend {
 }
 
 .settings-details summary::-webkit-details-marker,
-.result-details summary::-webkit-details-marker {
+.result-details summary::-webkit-details-marker,
+.cost-group summary::-webkit-details-marker {
   display: none;
 }
 
 .settings-details summary::after,
-.result-details summary::after {
+.result-details summary::after,
+.cost-group summary::after {
   content: "+";
   color: var(--mint-2);
   font-size: 22px;
@@ -670,7 +716,8 @@ legend {
 }
 
 .settings-details[open] summary::after,
-.result-details[open] summary::after {
+.result-details[open] summary::after,
+.cost-group[open] summary::after {
   content: "−";
 }
 
@@ -686,6 +733,51 @@ legend {
   margin: 0;
   border-top: 1px solid var(--line);
   padding: 18px 16px 16px;
+}
+
+.printer-presets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.printer-presets button {
+  display: grid;
+  gap: 3px;
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.printer-presets button:hover,
+.printer-presets button.is-active {
+  border-color: rgba(9, 168, 111, 0.55);
+  background: rgba(43, 229, 159, 0.12);
+  color: #08704e;
+}
+
+.printer-presets button strong {
+  font-size: 12px;
+}
+
+.printer-presets button small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.printer-estimate-note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
 }
 
 .field-grid {
@@ -927,6 +1019,45 @@ summary:focus-visible {
 
 .advanced.is-open {
   display: block;
+}
+
+.advanced-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cost-group {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: rgba(248, 251, 248, 0.82);
+}
+
+.cost-group[open] {
+  grid-column: 1 / -1;
+}
+
+.cost-group summary {
+  min-height: 46px;
+  padding: 8px 11px;
+  font-size: 12px;
+}
+
+.cost-group summary small {
+  grid-column: 1;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9.5px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cost-group > .field-grid {
+  border-top: 1px solid var(--line);
+  padding: 9px 11px;
 }
 
 .result-panel {
@@ -1694,12 +1825,16 @@ footer strong {
   }
 
   .calculator .advanced.is-open {
-    margin-top: 14px;
+    margin-top: 8px;
   }
 
   .calculator .advanced legend {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     font-size: 13px;
+  }
+
+  .calculator .cost-group > .field-grid {
+    padding-block: 6px;
   }
 
   .calculator .switch {
@@ -1854,8 +1989,20 @@ footer strong {
   }
 
   .theme-toggle {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand,
+  .nav a,
+  .footer-links a {
+    min-height: 44px;
+  }
+
+  .nav a,
+  .footer-links a {
+    display: inline-flex;
+    align-items: center;
   }
 
   .nav-secondary {
@@ -1901,6 +2048,7 @@ footer strong {
     top: 8px;
     z-index: 4;
     display: flex;
+    width: 100%;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
@@ -1916,6 +2064,23 @@ footer strong {
     cursor: pointer;
     font: inherit;
     text-align: left;
+  }
+
+  .calculator-heading-row {
+    gap: 10px;
+  }
+
+  .new-quote-button {
+    width: 44px;
+    padding: 0;
+  }
+
+  .new-quote-button b {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
   }
 
   .mobile-price-strip span {
@@ -2124,6 +2289,7 @@ footer strong {
 
   .calculator .settings-details {
     margin-top: 12px;
+    scroll-margin-top: 64px;
   }
 
   .calculator .advanced-toggle {
@@ -2133,6 +2299,27 @@ footer strong {
   .calculator .advanced .field-grid,
   .calculator .settings-details .field-grid {
     gap: 0;
+  }
+
+  .advanced-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .cost-group[open] {
+    grid-column: 1;
+  }
+
+  .cost-group summary {
+    min-height: 58px;
+  }
+
+  .printer-presets {
+    gap: 6px;
+  }
+
+  .printer-presets button {
+    min-height: 48px;
+    padding: 7px 8px;
   }
 
   .calculator .advanced .field-grid > label,
@@ -2372,6 +2559,23 @@ footer strong {
 }
 
 @media (max-width: 350px) {
+  .topbar {
+    gap: 6px;
+    padding-inline: 10px;
+  }
+
+  .brand span {
+    display: none;
+  }
+
+  .nav {
+    gap: 7px;
+  }
+
+  .printer-presets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .calculator > fieldset:first-of-type .field-grid > label {
     grid-template-columns: 1fr;
     align-items: stretch;
@@ -2482,7 +2686,8 @@ html[data-theme="dark"] .guide-summary article,
 html[data-theme="dark"] .legal-card,
 html[data-theme="dark"] .client-quote-sheet,
 html[data-theme="dark"] .settings-details,
-html[data-theme="dark"] .calculator-options .advanced-toggle {
+html[data-theme="dark"] .calculator-options .advanced-toggle,
+html[data-theme="dark"] .cost-group {
   background: rgba(23, 35, 31, 0.96);
 }
 
@@ -2490,8 +2695,17 @@ html[data-theme="dark"] .result-card,
 html[data-theme="dark"] .insights li,
 html[data-theme="dark"] .margin-options > button,
 html[data-theme="dark"] .margin-custom,
-html[data-theme="dark"] .live-costs output {
+html[data-theme="dark"] .live-costs output,
+html[data-theme="dark"] .printer-presets button,
+html[data-theme="dark"] .new-quote-button {
   background: var(--panel-2);
+}
+
+html[data-theme="dark"] .printer-presets button:hover,
+html[data-theme="dark"] .printer-presets button.is-active {
+  border-color: rgba(64, 238, 176, 0.56);
+  background: rgba(64, 238, 176, 0.11);
+  color: #65f0bb;
 }
 
 html[data-theme="dark"] .result-card.featured {

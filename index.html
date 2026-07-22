@@ -29,7 +29,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=JetBrains+Mono:wght@500..700&family=Sora:wght@600..800&display=swap" rel="stylesheet">
     <script src="./js/theme.js?v=3"></script>
-    <link rel="stylesheet" href="./styles.css?v=3">
+    <link rel="stylesheet" href="./styles.css?v=4">
   </head>
   <body>
     <header class="topbar">
@@ -150,16 +150,22 @@
 
       <section class="calculator-shell" id="calculadora">
         <form class="calculator" id="quoteForm">
-          <div class="section-heading">
-            <p class="eyebrow">Calculadora</p>
-            <h2>
-              <span class="calculator-title-desktop">Faça uma cotação em menos de 1 minuto</span>
-              <span class="calculator-title-mobile">Nova cotação</span>
-            </h2>
-            <p>
-              <span class="calculator-copy-desktop">Comece com quatro dados. Abra o modo completo quando quiser incluir mão de obra, frete, taxas e perdas.</span>
-              <span class="calculator-copy-mobile">Use os dados do slicer. Custos completos são opcionais.</span>
-            </p>
+          <div class="calculator-heading-row">
+            <div class="section-heading">
+              <p class="eyebrow">Calculadora</p>
+              <h2>
+                <span class="calculator-title-desktop">Faça uma cotação em menos de 1 minuto</span>
+                <span class="calculator-title-mobile">Nova cotação</span>
+              </h2>
+              <p>
+                <span class="calculator-copy-desktop">Comece com quatro dados. Abra o modo completo quando quiser incluir mão de obra, frete, taxas e perdas.</span>
+                <span class="calculator-copy-mobile">Use os dados do slicer. Custos completos são opcionais.</span>
+              </p>
+            </div>
+            <button class="new-quote-button" type="button" id="resetQuote" aria-label="Iniciar nova cotação" title="Iniciar nova cotação preservando seus padrões">
+              <span aria-hidden="true">↺</span>
+              <b>Nova cotação</b>
+            </button>
           </div>
 
           <button class="mobile-price-strip" type="button" data-calculator-view="price">
@@ -250,22 +256,27 @@
               </summary>
               <fieldset>
                 <legend class="visually-hidden">Impressora e energia</legend>
+                <div class="printer-presets" role="group" aria-label="Escolha rápida de impressora">
+                  <button type="button" data-printer-preset="95"><strong>A1 Mini</strong><small>95 W</small></button>
+                  <button type="button" data-printer-preset="115"><strong>A1</strong><small>115 W</small></button>
+                  <button type="button" data-printer-preset="135"><strong>P1P</strong><small>135 W</small></button>
+                  <button type="button" data-printer-preset="145" aria-pressed="true"><strong>P1S</strong><small>145 W</small></button>
+                  <button type="button" data-printer-preset="155"><strong>X1C</strong><small>155 W</small></button>
+                  <button type="button" data-printer-preset="custom"><strong>Outra</strong><small>Editar watts</small></button>
+                </div>
+                <select class="visually-hidden" name="printer" id="printerSelect" tabindex="-1" aria-hidden="true">
+                  <option value="95">Bambu Lab A1 Mini - estimado 95 W</option>
+                  <option value="115">Bambu Lab A1 - estimado 115 W</option>
+                  <option value="135">Bambu Lab P1P - estimado 135 W</option>
+                  <option value="145" selected>Bambu Lab P1S - estimado 145 W</option>
+                  <option value="155">Bambu Lab X1 Carbon - estimado 155 W</option>
+                  <option value="custom">Personalizada</option>
+                </select>
                 <div class="field-grid">
-                <label>
-                  Impressora
-                  <select name="printer" id="printerSelect">
-                    <option value="95">Bambu Lab A1 Mini - estimado 95 W</option>
-                    <option value="115">Bambu Lab A1 - estimado 115 W</option>
-                    <option value="135">Bambu Lab P1P - estimado 135 W</option>
-                    <option value="145" selected>Bambu Lab P1S - estimado 145 W</option>
-                    <option value="155">Bambu Lab X1 Carbon - estimado 155 W</option>
-                    <option value="custom">Personalizada</option>
-                  </select>
-                </label>
                 <label>
                   Consumo médio (W)
                   <input name="averageWatts" id="averageWatts" type="number" min="0" step="1" value="145">
-                  <span class="hint">Valor estimado. Para precisão real, use medidor de tomada.</span>
+                  <span class="hint">Valor estimado. Edite se tiver uma medição real.</span>
                 </label>
                 <label>
                   Tarifa de energia (R$/kWh)
@@ -276,6 +287,7 @@
                   <input name="machineHourCost" type="number" min="0" step="0.01" value="1.20">
                 </label>
                 </div>
+                <p class="printer-estimate-note">Referências iniciais do MVP, não especificações oficiais. Material, temperatura e ambiente alteram o consumo.</p>
               </fieldset>
             </details>
 
@@ -289,42 +301,68 @@
           </div>
 
           <fieldset class="advanced" id="advancedFields">
-            <legend>Custos completos</legend>
-            <div class="field-grid">
-              <label>
-                Taxa de falha/perda (%)
-                <input name="failurePercent" type="number" min="0" max="100" step="1" value="8">
-                <span class="hint">Aplicada a material, energia e desgaste que precisam ser repetidos.</span>
-              </label>
-              <label>
-                Embalagem e etiqueta (R$)
-                <input name="packagingCost" type="number" min="0" step="0.01" value="3.50">
-              </label>
-              <label>
-                Outros insumos (R$)
-                <input name="extraSupplies" type="number" min="0" step="0.01" value="2.00">
-              </label>
-              <label>
-                Mão de obra (min)
-                <input name="laborMinutes" id="laborMinutes" type="number" min="0" step="1" value="20">
-              </label>
-              <label>
-                Valor da sua hora (R$)
-                <input name="hourlyRate" id="hourlyRate" type="number" min="0" step="0.01" value="30">
-              </label>
-              <label>
-                Taxas/impostos (%)
-                <input name="taxPercent" type="number" min="0" max="99" step="0.1" value="0">
-                <span class="hint">Informe sua própria taxa. Não é orientação fiscal.</span>
-              </label>
-              <label>
-                Frete embutido (R$)
-                <input name="shippingCost" type="number" min="0" step="0.01" value="0">
-              </label>
-              <label>
-                Peso da peça pronta (opcional, g)
-                <input name="finalPartGrams" type="number" min="0" step="0.1" value="50">
-              </label>
+            <legend>Custos opcionais</legend>
+            <div class="advanced-groups">
+              <details class="cost-group">
+                <summary>
+                  <span>Perdas e embalagem</span>
+                  <small id="lossSettingsSummary">8% de falha · R$ 5,50 em insumos</small>
+                </summary>
+                <div class="field-grid">
+                  <label>
+                    Taxa de falha/perda (%)
+                    <input name="failurePercent" type="number" min="0" max="100" step="1" value="8">
+                    <span class="hint">Aplicada a material, energia e desgaste que precisam ser repetidos.</span>
+                  </label>
+                  <label>
+                    Embalagem e etiqueta (R$)
+                    <input name="packagingCost" type="number" min="0" step="0.01" value="3.50">
+                  </label>
+                  <label>
+                    Outros insumos (R$)
+                    <input name="extraSupplies" type="number" min="0" step="0.01" value="2.00">
+                  </label>
+                  <label>
+                    Peso da peça pronta (opcional, g)
+                    <input name="finalPartGrams" type="number" min="0" step="0.1" value="50">
+                  </label>
+                </div>
+              </details>
+
+              <details class="cost-group">
+                <summary>
+                  <span>Mão de obra</span>
+                  <small id="laborSettingsSummary">20 min · R$ 30,00/h</small>
+                </summary>
+                <div class="field-grid">
+                  <label>
+                    Tempo de trabalho (min)
+                    <input name="laborMinutes" id="laborMinutes" type="number" min="0" step="1" value="20">
+                  </label>
+                  <label>
+                    Valor da sua hora (R$)
+                    <input name="hourlyRate" id="hourlyRate" type="number" min="0" step="0.01" value="30">
+                  </label>
+                </div>
+              </details>
+
+              <details class="cost-group">
+                <summary>
+                  <span>Taxas e frete</span>
+                  <small id="salesSettingsSummary">0% em taxas · R$ 0,00 de frete</small>
+                </summary>
+                <div class="field-grid">
+                  <label>
+                    Taxas/impostos (%)
+                    <input name="taxPercent" type="number" min="0" max="99" step="0.1" value="0">
+                    <span class="hint">Informe sua própria taxa. Não é orientação fiscal.</span>
+                  </label>
+                  <label>
+                    Frete embutido (R$)
+                    <input name="shippingCost" type="number" min="0" step="0.01" value="0">
+                  </label>
+                </div>
+              </details>
             </div>
           </fieldset>
         </form>
@@ -526,7 +564,7 @@
       </article>
     </dialog>
 
-    <script src="./js/app.js?v=3" defer></script>
+    <script src="./js/app.js?v=4" defer></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",

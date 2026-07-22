@@ -1,6 +1,7 @@
 const form = document.querySelector("#quoteForm");
 const printerSelect = document.querySelector("#printerSelect");
 const averageWatts = document.querySelector("#averageWatts");
+const printerPresetButtons = document.querySelectorAll("[data-printer-preset]");
 const materialSelect = document.querySelector('select[name="material"]');
 const materialKgPrice = document.querySelector('input[name="materialKgPrice"]');
 const materialPriceHint = document.querySelector("#materialPriceHint");
@@ -9,11 +10,14 @@ const marginInput = document.querySelector('input[name="marginPercent"]');
 const marginCustom = document.querySelector(".margin-custom");
 const advancedToggle = document.querySelector("#advancedToggle");
 const advancedFields = document.querySelector("#advancedFields");
+const costGroups = document.querySelectorAll(".cost-group");
 const calculatorShell = document.querySelector("#calculadora");
 const calculatorTabs = document.querySelector(".calculator-tabs");
 const calculatorViewButtons = document.querySelectorAll("[data-calculator-view]");
 const copySummary = document.querySelector("#copySummary");
 const saveDefaults = document.querySelector("#saveDefaults");
+const resetQuote = document.querySelector("#resetQuote");
+const resultDetailPanels = document.querySelectorAll("#quoteResults .result-details");
 const sectionNavLinks = document.querySelectorAll("[data-nav-target]");
 const openClientQuote = document.querySelector("#openClientQuote");
 const clientQuoteDialog = document.querySelector("#clientQuoteDialog");
@@ -52,6 +56,9 @@ const output = {
   clientQuoteDate: document.querySelector("#clientQuoteDate"),
   clientQuoteStatus: document.querySelector("#clientQuoteStatus"),
   printerSettingsSummary: document.querySelector("#printerSettingsSummary"),
+  lossSettingsSummary: document.querySelector("#lossSettingsSummary"),
+  laborSettingsSummary: document.querySelector("#laborSettingsSummary"),
+  salesSettingsSummary: document.querySelector("#salesSettingsSummary"),
 };
 
 const localDefaultsKey = "cotar3d-defaults-v1";
@@ -231,6 +238,9 @@ function calculateQuote() {
   const printerLabel = printerSelect.selectedOptions?.[0]?.textContent
     ?.replace(/\s+-\s+estimado.*$/i, "") || "Personalizada";
   output.printerSettingsSummary.textContent = `${printerLabel} · ${Math.round(watts)} W · ${money(energyRate)}/kWh`;
+  output.lossSettingsSummary.textContent = `${percentage.format(failurePercent)}% de falha · ${money(packagingCost + extraSupplies)} em insumos`;
+  output.laborSettingsSummary.textContent = `${Math.round(laborMinutes)} min · ${money(hourlyRate)}/h`;
+  output.salesSettingsSummary.textContent = `${percentage.format(taxPercent)}% em taxas · ${money(shippingCost)} de frete`;
   output.totalCost.textContent = money(totalCost);
   output.minimumPrice.textContent = money(minimumPrice);
   output.profitValue.textContent = money(profitValue);
@@ -319,6 +329,34 @@ function syncPrinterPreset() {
   if (printerSelect.value !== "custom") {
     averageWatts.value = printerSelect.value;
   }
+  updatePrinterPresetState();
+  calculateQuote();
+}
+
+function updatePrinterPresetState() {
+  printerPresetButtons.forEach((button) => {
+    const isActive = button.dataset.printerPreset === printerSelect.value;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function applyPrinterPreset(event) {
+  printerSelect.value = event.currentTarget.dataset.printerPreset;
+  syncPrinterPreset();
+
+  if (printerSelect.value === "custom") {
+    averageWatts.focus();
+    averageWatts.select();
+  }
+}
+
+function syncCustomWatts() {
+  if (printerSelect.value !== "custom" && String(averageWatts.value) !== printerSelect.value) {
+    printerSelect.value = "custom";
+  }
+
+  updatePrinterPresetState();
   calculateQuote();
 }
 
@@ -357,6 +395,42 @@ function setCalculatorView(view, shouldScroll = true) {
 function toggleAdvanced() {
   advancedFields.classList.toggle("is-open", advancedToggle.checked);
   calculateQuote();
+}
+
+function keepCostGroupExclusive(event) {
+  const currentGroup = event.currentTarget;
+  if (!currentGroup.open) return;
+
+  costGroups.forEach((group) => {
+    if (group !== currentGroup) group.open = false;
+  });
+}
+
+function prepareCostGroupOpen(event) {
+  const currentGroup = event.currentTarget.parentElement;
+  if (currentGroup.open) return;
+
+  costGroups.forEach((group) => {
+    if (group !== currentGroup) group.open = false;
+  });
+}
+
+function keepMobileResultExclusive(event) {
+  const currentPanel = event.currentTarget;
+  if (!currentPanel.open || !window.matchMedia("(max-width: 680px)").matches) return;
+
+  resultDetailPanels.forEach((panel) => {
+    if (panel !== currentPanel) panel.open = false;
+  });
+}
+
+function prepareMobileResultOpen(event) {
+  const currentPanel = event.currentTarget.parentElement;
+  if (currentPanel.open || !window.matchMedia("(max-width: 680px)").matches) return;
+
+  resultDetailPanels.forEach((panel) => {
+    if (panel !== currentPanel) panel.open = false;
+  });
 }
 
 function copyQuoteSummary() {
@@ -434,6 +508,7 @@ function loadLocalDefaults() {
 
     if (!saved) {
       updateMaterialHint();
+      updatePrinterPresetState();
       return;
     }
 
@@ -445,9 +520,42 @@ function loadLocalDefaults() {
 
     advancedToggle.checked = Boolean(saved.advancedEnabled);
     updateMaterialHint();
+    updatePrinterPresetState();
   } catch {
     updateMaterialHint();
+    updatePrinterPresetState();
   }
+}
+
+function resetQuoteForm() {
+  form.reset();
+  loadLocalDefaults();
+
+  form.elements.jobName.value = "";
+  form.elements.quantity.value = "1";
+  form.elements.consumedGrams.value = "0";
+  form.elements.printHours.value = "0";
+  form.elements.finalPartGrams.value = "0";
+
+  costGroups.forEach((group) => {
+    group.open = false;
+  });
+  resultDetailPanels.forEach((panel) => {
+    panel.open = false;
+  });
+
+  toggleAdvanced();
+  setCalculatorView("data");
+  updateMaterialHint();
+  updatePrinterPresetState();
+  calculateQuote();
+
+  const resetLabel = resetQuote.querySelector("b");
+  resetLabel.textContent = "Pronto";
+  form.elements.jobName.focus({ preventScroll: true });
+  window.setTimeout(() => {
+    resetLabel.textContent = "Nova cotação";
+  }, 1400);
 }
 
 function updateClientQuote() {
@@ -561,14 +669,21 @@ function updateActiveSectionNav() {
 form.addEventListener("input", calculateQuote);
 form.addEventListener("change", calculateQuote);
 printerSelect.addEventListener("change", syncPrinterPreset);
+averageWatts.addEventListener("input", syncCustomWatts);
+printerPresetButtons.forEach((button) => button.addEventListener("click", applyPrinterPreset));
 materialSelect.addEventListener("change", syncMaterialPreset);
 marginButtons.forEach((button) => button.addEventListener("click", applyMarginPreset));
 calculatorViewButtons.forEach((button) => {
   button.addEventListener("click", () => setCalculatorView(button.dataset.calculatorView));
 });
 advancedToggle.addEventListener("change", toggleAdvanced);
+costGroups.forEach((group) => group.addEventListener("toggle", keepCostGroupExclusive));
+resultDetailPanels.forEach((panel) => panel.addEventListener("toggle", keepMobileResultExclusive));
+costGroups.forEach((group) => group.querySelector("summary").addEventListener("click", prepareCostGroupOpen));
+resultDetailPanels.forEach((panel) => panel.querySelector("summary").addEventListener("click", prepareMobileResultOpen));
 copySummary.addEventListener("click", copyQuoteSummary);
 saveDefaults.addEventListener("click", saveLocalDefaults);
+resetQuote.addEventListener("click", resetQuoteForm);
 openClientQuote.addEventListener("click", showClientQuote);
 closeClientQuote.addEventListener("click", hideClientQuote);
 copyClientQuote.addEventListener("click", shareClientQuoteText);

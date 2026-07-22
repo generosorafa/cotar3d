@@ -38,6 +38,21 @@ async function testViewport(browser, config) {
   await page.locator("#quoteForm").waitFor({ state: "visible", timeout: 15000 });
   const settingsClosedByDefault = !(await page.locator(".settings-details").evaluate((element) => element.open));
   await page.locator(".settings-details summary").click();
+  const printerPresetCount = await page.locator("[data-printer-preset]").count();
+  await page.locator('[data-printer-preset="95"]').click();
+  const printerPresetApplied =
+    (await page.locator("#printerSelect").inputValue()) === "95" &&
+    (await page.locator("#averageWatts").inputValue()) === "95" &&
+    (await page.locator('[data-printer-preset="95"]').getAttribute("aria-pressed")) === "true";
+  await page.locator("#averageWatts").fill("111");
+  const customWattsApplied =
+    (await page.locator("#printerSelect").inputValue()) === "custom" &&
+    (await page.locator('[data-printer-preset="custom"]').getAttribute("aria-pressed")) === "true";
+  await page.locator('[data-printer-preset="145"]').click();
+  if (config.name === "desktop" || config.name === "mobile") {
+    await page.locator(".settings-details").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(outputDir, `cotar3d-impressoras-${config.name}.png`) });
+  }
   await page.locator('[name="materialKgPrice"]').fill("95");
   await page.locator('[name="consumedGrams"]').fill("120");
   await page.locator('[name="printHours"]').fill("8");
@@ -62,6 +77,13 @@ async function testViewport(browser, config) {
       .gridTemplateColumns.trim().split(/\s+/).length,
     primaryLabelColumns: getComputedStyle(document.querySelector("#quoteForm fieldset .field-grid label"))
       .gridTemplateColumns.trim().split(/\s+/).length,
+    themeToggleSize: Math.min(
+      document.querySelector("[data-theme-toggle]").getBoundingClientRect().width,
+      document.querySelector("[data-theme-toggle]").getBoundingClientRect().height
+    ),
+    smallestNavTarget: Math.min(
+      ...Array.from(document.querySelectorAll(".nav a"), (link) => link.getBoundingClientRect().height)
+    ),
   }));
 
   const dataViewStarted = !config.mobile || await page.locator("#quoteForm").isVisible();
@@ -129,16 +151,15 @@ async function testViewport(browser, config) {
     expandedDetailsContained = expandedMetrics.contained;
     expandedDetailsClearAlerts = expandedMetrics.clearAlerts;
     expandedAlertsContained = expandedMetrics.alertsContained;
+    layoutMetrics.openResultPanels = await page.locator("#quoteResults details[open]").count();
 
     if (config.name === "mobile") {
       await page.locator(".result-secondary").scrollIntoViewIfNeeded();
       await page.screenshot({ path: path.join(outputDir, "cotar3d-mobile-detalhes-abertos.png") });
     }
 
-    for (let index = 0; index < resultDetailCount; index += 1) {
-      await resultDetails.nth(index).locator("summary").click();
-    }
-    if (!insightsWereOpen) await insightDetails.locator("summary").click();
+    const openResultPanel = page.locator("#quoteResults details[open]");
+    if (await openResultPanel.count()) await openResultPanel.first().locator("summary").click();
   }
 
   await page.click("#openClientQuote");
@@ -182,16 +203,30 @@ async function testViewport(browser, config) {
     toggle.checked = true;
     toggle.dispatchEvent(new Event("change", { bubbles: true }));
   });
+  const costGroups = page.locator(".cost-group");
+  const costGroupCount = await costGroups.count();
+  const costGroupsClosedByDefault = (await page.locator(".cost-group[open]").count()) === 0;
   await page.locator('[name="consumedGrams"]').fill("1000");
   await page.locator('[name="materialKgPrice"]').fill("100");
   await page.locator('[name="printHours"]').fill("0");
+  await costGroups.nth(0).locator("summary").click();
   await page.locator('[name="failurePercent"]').fill("10");
   await page.locator('[name="packagingCost"]').fill("100");
   await page.locator('[name="extraSupplies"]').fill("100");
-  await page.locator('[name="shippingCost"]').fill("100");
+  await costGroups.nth(1).locator("summary").click();
+  const firstCostGroupClosed = !(await costGroups.nth(0).evaluate((element) => element.open));
   await page.locator('[name="laborMinutes"]').fill("0");
+  await page.locator('[name="hourlyRate"]').fill("30");
+  await costGroups.nth(2).locator("summary").click();
+  const costGroupsExclusive = firstCostGroupClosed && (await page.locator(".cost-group[open]").count()) === 1;
   await page.locator('[name="taxPercent"]').fill("10");
+  await page.locator('[name="shippingCost"]').fill("100");
   await page.locator('[name="marginPercent"]').fill("0");
+  const progressiveSummaries = [
+    await page.locator("#lossSettingsSummary").innerText(),
+    await page.locator("#laborSettingsSummary").innerText(),
+    await page.locator("#salesSettingsSummary").innerText(),
+  ];
   const failureReserve = (await page.locator("#breakdownList li").filter({
     hasText: "Reserva para repetir impressão",
   }).textContent()).replace(/\s/g, " ");
@@ -225,6 +260,16 @@ async function testViewport(browser, config) {
     .textContent()
     .catch(() => "");
 
+  await page.locator("#resetQuote").click();
+  const resetState = await page.evaluate(() => ({
+    jobName: document.querySelector('[name="jobName"]').value,
+    quantity: document.querySelector('[name="quantity"]').value,
+    consumedGrams: document.querySelector('[name="consumedGrams"]').value,
+    printHours: document.querySelector('[name="printHours"]').value,
+    view: document.querySelector("#calculadora").dataset.view,
+    openCostGroups: document.querySelectorAll(".cost-group[open]").length,
+  }));
+
   await page.close();
 
   const failures = [];
@@ -237,6 +282,9 @@ async function testViewport(browser, config) {
     if (!navText.includes(label)) failures.push(`menu sem ${label}`);
   }
   if (!settingsClosedByDefault) failures.push("ajustes de impressora deveriam iniciar recolhidos");
+  if (printerPresetCount !== 6 || !printerPresetApplied || !customWattsApplied) {
+    failures.push("seleção visual de impressora ou watts personalizados não sincronizou");
+  }
   if (!darkThemeApplied || darkThemeColor !== "#0e1715" || !lightThemeRestored) {
     failures.push("alternância de tema não atualizou interface e cor do navegador");
   }
@@ -278,6 +326,28 @@ async function testViewport(browser, config) {
   if (!dataViewStarted || !priceViewOpened) failures.push("navegação Dados/Preço não abriu as duas etapas");
   if (!expandedDetailsContained || !expandedDetailsClearAlerts || !expandedAlertsContained) {
     failures.push("detalhes abertos escaparam do próprio bloco ou sobrepuseram os alertas");
+  }
+  if (config.mobile && layoutMetrics.openResultPanels !== 1) {
+    failures.push(`acordeões mobile permitiram ${layoutMetrics.openResultPanels} painéis abertos`);
+  }
+  if (costGroupCount !== 3 || !costGroupsClosedByDefault || !costGroupsExclusive) {
+    failures.push("grupos de custos opcionais não funcionaram de forma progressiva");
+  }
+  if (!progressiveSummaries[0].includes("10,0%") || !progressiveSummaries[2].includes("10,0%")) {
+    failures.push(`resumos dos custos não atualizaram: ${progressiveSummaries.join(" | ")}`);
+  }
+  if (
+    resetState.jobName !== "" ||
+    resetState.quantity !== "1" ||
+    resetState.consumedGrams !== "0" ||
+    resetState.printHours !== "0" ||
+    resetState.view !== "data" ||
+    resetState.openCostGroups !== 0
+  ) {
+    failures.push(`nova cotação não reiniciou corretamente: ${JSON.stringify(resetState)}`);
+  }
+  if (config.mobile && (layoutMetrics.themeToggleSize < 44 || layoutMetrics.smallestNavTarget < 44)) {
+    failures.push(`alvos de toque pequenos: tema=${layoutMetrics.themeToggleSize}; menu=${layoutMetrics.smallestNavTarget}`);
   }
   if (!config.mobile && layoutMetrics.primaryColumns !== 3) {
     failures.push(`formulario desktop com ${layoutMetrics.primaryColumns} colunas`);
