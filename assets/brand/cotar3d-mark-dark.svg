@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Símbolo Cotar3D</title>
+  <desc id="desc">Letra C geométrica formada por três camadas de impressão 3D.</desc>
+  <path fill="#f1f7f4" d="M5 17 31 2l28 16-12 7-16-9-13 8L5 17Z"/>
+  <path fill="#40eeb0" d="m5 25 26 15v10L5 35V25Z"/>
+  <path fill="#f1f7f4" d="m31 45 16-9 12 7-28 17L5 45l13-8 13 8Z"/>
+</svg>

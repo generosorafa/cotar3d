@@ -5,8 +5,13 @@ const materialSelect = document.querySelector('select[name="material"]');
 const materialKgPrice = document.querySelector('input[name="materialKgPrice"]');
 const materialPriceHint = document.querySelector("#materialPriceHint");
 const marginButtons = document.querySelectorAll("[data-margin]");
+const marginInput = document.querySelector('input[name="marginPercent"]');
+const marginCustom = document.querySelector(".margin-custom");
 const advancedToggle = document.querySelector("#advancedToggle");
 const advancedFields = document.querySelector("#advancedFields");
+const calculatorShell = document.querySelector("#calculadora");
+const calculatorTabs = document.querySelector(".calculator-tabs");
+const calculatorViewButtons = document.querySelectorAll("[data-calculator-view]");
 const copySummary = document.querySelector("#copySummary");
 const saveDefaults = document.querySelector("#saveDefaults");
 const sectionNavLinks = document.querySelectorAll("[data-nav-target]");
@@ -20,6 +25,10 @@ const clientQuoteSeller = document.querySelector("#clientQuoteSeller");
 const output = {
   suggestedPrice: document.querySelector("#suggestedPrice"),
   mobileSuggestedPrice: document.querySelector("#mobileSuggestedPrice"),
+  mobileTabPrice: document.querySelector("#mobileTabPrice"),
+  materialCostPreview: document.querySelector("#materialCostPreview"),
+  energyCostPreview: document.querySelector("#energyCostPreview"),
+  laborCostPreview: document.querySelector("#laborCostPreview"),
   unitPriceSummary: document.querySelector("#unitPriceSummary"),
   marginSummary: document.querySelector("#marginSummary"),
   totalCost: document.querySelector("#totalCost"),
@@ -141,7 +150,7 @@ function buildInsights({
   }
 
   if (markupPercent < 20) {
-    insights.push(["warning", "Acréscimo abaixo de 20% pode ficar apertado se houver retrabalho ou negociação."]);
+    insights.push(["warning", "Margem sobre o custo abaixo de 20% pode ficar apertada se houver retrabalho ou negociação."]);
   }
 
   if (taxPercent >= 80) {
@@ -201,7 +210,7 @@ function calculateQuote() {
   const repeatableProductionCost = materialCost + energyCost + machineCost;
   const failureCost = repeatableProductionCost * (failurePercent / 100);
   const totalCost = baseCost + failureCost;
-  const minimumPrice = totalCost;
+  const minimumPrice = totalCost / (1 - taxPercent / 100);
   const markupPrice = totalCost * (1 + markupPercent / 100);
   const suggestedPrice = markupPrice / (1 - taxPercent / 100);
   const taxCost = suggestedPrice * (taxPercent / 100);
@@ -213,6 +222,10 @@ function calculateQuote() {
 
   output.suggestedPrice.textContent = money(suggestedPrice);
   output.mobileSuggestedPrice.textContent = money(suggestedPrice);
+  output.mobileTabPrice.textContent = money(suggestedPrice);
+  output.materialCostPreview.textContent = money(materialCost);
+  output.energyCostPreview.textContent = money(energyCost);
+  output.laborCostPreview.textContent = useAdvanced ? money(laborCost) : "Opcional";
   output.unitPriceSummary.textContent = `${quantityLabel(quantity)} · ${money(unitPrice)} por peça`;
   output.marginSummary.textContent = `Margem real no preço: ${percentage.format(realMargin)}%`;
   const printerLabel = printerSelect.selectedOptions?.[0]?.textContent
@@ -223,6 +236,15 @@ function calculateQuote() {
   output.profitValue.textContent = money(profitValue);
   output.profitPerHour.textContent = money(profitPerHour);
   output.wasteValue.textContent = finalPartGrams > 0 ? `${wasteGrams.toFixed(1)} g` : "opcional";
+  marginButtons.forEach((button) => {
+    const isActive = Number(button.dataset.margin) === markupPercent;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+  marginCustom.classList.toggle(
+    "is-active",
+    !Array.from(marginButtons).some((button) => Number(button.dataset.margin) === markupPercent)
+  );
   output.healthCard.classList.remove("is-good", "is-warning", "is-danger");
 
   if (profitValue <= 0 || realMargin < 8) {
@@ -314,8 +336,22 @@ function syncMaterialPreset() {
 
 function applyMarginPreset(event) {
   const margin = event.currentTarget.dataset.margin;
-  form.elements.marginPercent.value = margin;
+  marginInput.value = margin;
   calculateQuote();
+}
+
+function setCalculatorView(view, shouldScroll = true) {
+  const targetView = view === "price" ? "price" : "data";
+  calculatorShell.dataset.view = targetView;
+
+  calculatorViewButtons.forEach((button) => {
+    if (!button.closest(".calculator-tabs")) return;
+    button.setAttribute("aria-pressed", String(button.dataset.calculatorView === targetView));
+  });
+
+  if (shouldScroll && window.matchMedia("(max-width: 680px)").matches) {
+    calculatorShell.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function toggleAdvanced() {
@@ -335,7 +371,7 @@ function copyQuoteSummary() {
     `Preco minimo: ${money(quote.minimumPrice)}`,
     `Preco sugerido: ${money(quote.suggestedPrice)}`,
     `Preco por peca: ${money(quote.unitPrice)}`,
-    `Acrescimo sobre o custo: ${percentage.format(quote.markupPercent)}%`,
+    `Margem desejada sobre o custo: ${percentage.format(quote.markupPercent)}%`,
     `Margem real no preco: ${percentage.format(quote.realMargin)}%`,
     `Taxas/impostos: ${money(quote.taxCost)}`,
     `Lucro estimado: ${money(quote.profitValue)}`,
@@ -527,6 +563,9 @@ form.addEventListener("change", calculateQuote);
 printerSelect.addEventListener("change", syncPrinterPreset);
 materialSelect.addEventListener("change", syncMaterialPreset);
 marginButtons.forEach((button) => button.addEventListener("click", applyMarginPreset));
+calculatorViewButtons.forEach((button) => {
+  button.addEventListener("click", () => setCalculatorView(button.dataset.calculatorView));
+});
 advancedToggle.addEventListener("change", toggleAdvanced);
 copySummary.addEventListener("click", copyQuoteSummary);
 saveDefaults.addEventListener("click", saveLocalDefaults);
@@ -539,8 +578,17 @@ clientQuoteDialog.addEventListener("click", (event) => {
 });
 window.addEventListener("hashchange", updateActiveSectionNav);
 
+if ("IntersectionObserver" in window) {
+  const calculatorObserver = new IntersectionObserver(
+    ([entry]) => calculatorTabs.classList.toggle("is-visible", entry.isIntersecting),
+    { threshold: 0.02 }
+  );
+  calculatorObserver.observe(calculatorShell);
+}
+
 loadLocalDefaults();
 toggleAdvanced();
+setCalculatorView("data", false);
 calculateQuote();
 updateActiveSectionNav();
 

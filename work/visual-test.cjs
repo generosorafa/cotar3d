@@ -24,6 +24,16 @@ async function testViewport(browser, config) {
   const title = await page.title();
   const h1 = await page.locator("h1").first().innerText();
   const navText = await page.locator(".nav").first().innerText();
+  const themeToggle = page.locator("[data-theme-toggle]");
+  await themeToggle.click();
+  const darkThemeApplied = await page.locator("html").getAttribute("data-theme") === "dark";
+  const darkThemeColor = await page.locator('meta[name="theme-color"]').getAttribute("content");
+  const darkScreenshot = config.name === "desktop"
+    ? path.join(outputDir, "cotar3d-desktop-escuro.png")
+    : null;
+  if (darkScreenshot) await page.screenshot({ path: darkScreenshot, fullPage: true });
+  await themeToggle.click();
+  const lightThemeRestored = await page.locator("html").getAttribute("data-theme") === "light";
 
   await page.locator("#quoteForm").waitFor({ state: "visible", timeout: 15000 });
   const settingsClosedByDefault = !(await page.locator(".settings-details").evaluate((element) => element.open));
@@ -36,10 +46,9 @@ async function testViewport(browser, config) {
   await page.locator('[name="quantity"]').fill("4");
   await page.locator(".settings-details summary").click();
 
-  const cost = await page.locator("#totalCost").innerText();
-  const suggested = await page.locator("#suggestedPrice").innerText();
-  const unitSummary = await page.locator("#unitPriceSummary").innerText();
-  const marginSummary = await page.locator("#marginSummary").innerText();
+  const materialPreview = await page.locator("#materialCostPreview").innerText();
+  const energyPreview = await page.locator("#energyCostPreview").innerText();
+  const activeMargin = await page.locator('[data-margin][aria-pressed="true"]').innerText();
   const alertsClosedByDefault = !(await page.locator("#insightDetails").evaluate((element) => element.open));
   const mobilePriceStripDisplay = await page.locator(".mobile-price-strip").evaluate((element) => {
     return getComputedStyle(element).display;
@@ -49,14 +58,38 @@ async function testViewport(browser, config) {
     problemTop: document.querySelector("#problema").getBoundingClientRect().top + scrollY,
     horizontalOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     calculatorHeight: document.querySelector("#quoteForm").getBoundingClientRect().height,
-    resultHeight: document.querySelector("#quoteResults").getBoundingClientRect().height,
     primaryColumns: getComputedStyle(document.querySelector("#quoteForm fieldset .field-grid"))
-      .gridTemplateColumns.split(" ").length,
+      .gridTemplateColumns.trim().split(/\s+/).length,
     primaryLabelColumns: getComputedStyle(document.querySelector("#quoteForm fieldset .field-grid label"))
-      .gridTemplateColumns.split(" ").length,
-    resultColumns: getComputedStyle(document.querySelector("#quoteResults .result-grid"))
-      .gridTemplateColumns.split(" ").length,
+      .gridTemplateColumns.trim().split(/\s+/).length,
   }));
+
+  const dataViewStarted = !config.mobile || await page.locator("#quoteForm").isVisible();
+  if (config.name === "mobile") {
+    await page.locator("#calculadora").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(150);
+    await page.screenshot({ path: path.join(outputDir, "cotar3d-mobile-dados.png") });
+  }
+  if (config.mobile) {
+    await page.locator(".mobile-price-strip").click();
+    await page.locator("#quoteResults").waitFor({ state: "visible" });
+    if (config.name === "mobile") {
+      await page.screenshot({ path: path.join(outputDir, "cotar3d-mobile-preco.png") });
+    }
+  }
+
+  const priceViewOpened = await page.locator("#quoteResults").isVisible();
+  const cost = await page.locator("#totalCost").innerText();
+  const suggested = await page.locator("#suggestedPrice").innerText();
+  const unitSummary = await page.locator("#unitPriceSummary").innerText();
+  const marginSummary = await page.locator("#marginSummary").innerText();
+  layoutMetrics.resultHeight = await page.locator("#quoteResults").evaluate((element) => {
+    return element.getBoundingClientRect().height;
+  });
+  layoutMetrics.resultColumns = await page.locator("#quoteResults .result-grid").evaluate((element) => {
+    const columns = Array.from(element.children, (child) => Math.round(child.getBoundingClientRect().left));
+    return new Set(columns).size;
+  });
 
   await page.click("#openClientQuote");
   const quoteDialogVisible = await page.locator("#clientQuoteDialog").isVisible();
@@ -89,6 +122,11 @@ async function testViewport(browser, config) {
   const screenshot = path.join(outputDir, `cotar3d-${config.name}.png`);
   await page.screenshot({ path: screenshot, fullPage: true });
 
+  if (config.mobile) {
+    await page.locator('.calculator-tabs [data-calculator-view="data"]').evaluate((button) => button.click());
+    await page.locator("#quoteForm").waitFor({ state: "visible" });
+  }
+
   await page.evaluate(() => {
     const toggle = document.querySelector("#advancedToggle");
     toggle.checked = true;
@@ -102,7 +140,7 @@ async function testViewport(browser, config) {
   await page.locator('[name="extraSupplies"]').fill("100");
   await page.locator('[name="shippingCost"]').fill("100");
   await page.locator('[name="laborMinutes"]').fill("0");
-  await page.locator('[name="taxPercent"]').fill("0");
+  await page.locator('[name="taxPercent"]').fill("10");
   await page.locator('[name="marginPercent"]').fill("0");
   const failureReserve = (await page.locator("#breakdownList li").filter({
     hasText: "Reserva para repetir impressão",
@@ -110,6 +148,7 @@ async function testViewport(browser, config) {
   const advancedCalculatorHeight = await page.locator("#quoteForm").evaluate((element) => {
     return element.getBoundingClientRect().height;
   });
+  const minimumWithTax = await page.locator("#minimumPrice").textContent();
   if (!config.mobile) {
     await page.evaluate(() => {
       document.documentElement.style.scrollBehavior = "auto";
@@ -148,6 +187,9 @@ async function testViewport(browser, config) {
     if (!navText.includes(label)) failures.push(`menu sem ${label}`);
   }
   if (!settingsClosedByDefault) failures.push("ajustes de impressora deveriam iniciar recolhidos");
+  if (!darkThemeApplied || darkThemeColor !== "#0e1715" || !lightThemeRestored) {
+    failures.push("alternância de tema não atualizou interface e cor do navegador");
+  }
   if (!alertsClosedByDefault) failures.push("alertas deveriam iniciar recolhidos");
   if (!alertsOpenedForCritical) failures.push("alertas críticos deveriam abrir automaticamente");
   if (!cost.includes("R$")) failures.push(`custo nao renderizou: ${cost}`);
@@ -169,7 +211,12 @@ async function testViewport(browser, config) {
   }
   if (activeAfterMetodo?.trim() !== "Método") failures.push(`menu ativo inesperado: ${activeAfterMetodo}`);
   if (!marginSummary.includes("31,0%")) failures.push(`margem real inesperada: ${marginSummary}`);
+  if (!activeMargin.includes("45%")) failures.push(`preset de margem não ficou ativo: ${activeMargin}`);
+  if (!materialPreview.replace(/\s/g, " ").includes("R$ 11,40") || !energyPreview.includes("R$")) {
+    failures.push(`prévias de custo inesperadas: material=${materialPreview}; energia=${energyPreview}`);
+  }
   if (!failureReserve.includes("R$ 10,00")) failures.push(`reserva de falha inesperada: ${failureReserve}`);
+  if (!minimumWithTax.replace(/\s/g, " ").includes("R$ 455,56")) failures.push(`preço mínimo com imposto inesperado: ${minimumWithTax}`);
   if (layoutMetrics.horizontalOverflow > 1) {
     failures.push(`pagina com overflow horizontal de ${layoutMetrics.horizontalOverflow}px`);
   }
@@ -178,6 +225,7 @@ async function testViewport(browser, config) {
   }
   if (config.mobile && mobilePriceStripDisplay === "none") failures.push("atalho de resultado nao apareceu no celular");
   if (!config.mobile && mobilePriceStripDisplay !== "none") failures.push("atalho de resultado apareceu no desktop");
+  if (!dataViewStarted || !priceViewOpened) failures.push("navegação Dados/Preço não abriu as duas etapas");
   if (!config.mobile && layoutMetrics.primaryColumns !== 3) {
     failures.push(`formulario desktop com ${layoutMetrics.primaryColumns} colunas`);
   }
@@ -211,6 +259,7 @@ async function testViewport(browser, config) {
     suggested,
     unitSummary,
     marginSummary,
+    minimumWithTax,
     failureReserve,
     layoutMetrics,
     activeAfterMetodo,
@@ -222,6 +271,7 @@ async function testViewport(browser, config) {
 (async () => {
   const browser = await chromium.launch({ headless: true });
   const results = [];
+  const secondaryFailures = [];
 
   for (const config of [
     { name: "desktop", viewport: { width: 1440, height: 1000 }, mobile: false },
@@ -230,6 +280,28 @@ async function testViewport(browser, config) {
     { name: "mobile-compact", viewport: { width: 320, height: 700 }, mobile: true },
   ]) {
     results.push(await testViewport(browser, config));
+  }
+
+  for (const file of [
+    "como-calcular-preco-impressao-3d.html",
+    "politica-de-privacidade.html",
+    "termos-de-uso.html",
+    "404.html",
+  ]) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL(file, siteUrl).href, { waitUntil: "networkidle", timeout: 45000 });
+    const toggle = page.locator("[data-theme-toggle]");
+    const toggleCount = await toggle.count();
+
+    if (toggleCount === 1) await toggle.click();
+    const theme = await page.locator("html").getAttribute("data-theme");
+    if (toggleCount !== 1 || theme !== "dark" || errors.length) {
+      secondaryFailures.push(`${file}: tema=${theme}; botões=${toggleCount}; erros=${errors.join(" | ")}`);
+    }
+
+    await page.close();
   }
 
   await browser.close();
@@ -243,7 +315,9 @@ async function testViewport(browser, config) {
     }
   }
 
-  if (results.some((result) => result.failures.length)) process.exit(1);
+  for (const failure of secondaryFailures) console.error(`- página secundária: ${failure}`);
+
+  if (results.some((result) => result.failures.length) || secondaryFailures.length) process.exit(1);
 })().catch((error) => {
   console.error(error);
   process.exit(1);

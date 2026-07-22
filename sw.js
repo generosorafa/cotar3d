@@ -1,14 +1,16 @@
-const CACHE_NAME = "cotar3d-shell-v1";
+const CACHE_NAME = "cotar3d-shell-v2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./js/app.js",
+  "./js/theme.js",
   "./site.webmanifest",
   "./como-calcular-preco-impressao-3d.html",
   "./politica-de-privacidade.html",
   "./termos-de-uso.html",
   "./assets/brand/cotar3d-mark.svg",
+  "./assets/brand/cotar3d-mark-dark.svg",
   "./assets/brand/cotar3d-app-icon.svg",
   "./assets/brand/cotar3d-icon-192.png",
   "./assets/brand/cotar3d-icon-512.png",
