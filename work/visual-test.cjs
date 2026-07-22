@@ -91,6 +91,56 @@ async function testViewport(browser, config) {
     return new Set(columns).size;
   });
 
+  let expandedDetailsContained = true;
+  let expandedDetailsClearAlerts = true;
+  let expandedAlertsContained = true;
+
+  if (config.mobile) {
+    const resultDetails = page.locator(".result-secondary .result-details");
+    const resultDetailCount = await resultDetails.count();
+
+    for (let index = 0; index < resultDetailCount; index += 1) {
+      await resultDetails.nth(index).locator("summary").click();
+    }
+
+    const insightDetails = page.locator("#insightDetails");
+    const insightsWereOpen = await insightDetails.evaluate((element) => element.open);
+    if (!insightsWereOpen) await insightDetails.locator("summary").click();
+
+    const expandedMetrics = await page.locator("#quoteResults").evaluate((panel) => {
+      const secondary = panel.querySelector(".result-secondary");
+      const alerts = panel.querySelector("#insightDetails");
+      const alertContent = alerts.querySelector(":scope > div");
+      const actions = panel.querySelector(".result-actions");
+      const details = Array.from(secondary.querySelectorAll(".result-details[open]"));
+
+      return {
+        contained: details.every((detail) => {
+          const content = detail.querySelector(":scope > div");
+          return content && content.getBoundingClientRect().bottom <= detail.getBoundingClientRect().bottom + 1;
+        }),
+        clearAlerts: secondary.getBoundingClientRect().bottom <= alerts.getBoundingClientRect().top + 1,
+        alertsContained:
+          alertContent.getBoundingClientRect().bottom <= alerts.getBoundingClientRect().bottom + 1 &&
+          alerts.getBoundingClientRect().bottom <= actions.getBoundingClientRect().top + 1,
+      };
+    });
+
+    expandedDetailsContained = expandedMetrics.contained;
+    expandedDetailsClearAlerts = expandedMetrics.clearAlerts;
+    expandedAlertsContained = expandedMetrics.alertsContained;
+
+    if (config.name === "mobile") {
+      await page.locator(".result-secondary").scrollIntoViewIfNeeded();
+      await page.screenshot({ path: path.join(outputDir, "cotar3d-mobile-detalhes-abertos.png") });
+    }
+
+    for (let index = 0; index < resultDetailCount; index += 1) {
+      await resultDetails.nth(index).locator("summary").click();
+    }
+    if (!insightsWereOpen) await insightDetails.locator("summary").click();
+  }
+
   await page.click("#openClientQuote");
   const quoteDialogVisible = await page.locator("#clientQuoteDialog").isVisible();
   const clientQuoteText = await page.locator("#clientQuoteDialog").innerText();
@@ -226,6 +276,9 @@ async function testViewport(browser, config) {
   if (config.mobile && mobilePriceStripDisplay === "none") failures.push("atalho de resultado nao apareceu no celular");
   if (!config.mobile && mobilePriceStripDisplay !== "none") failures.push("atalho de resultado apareceu no desktop");
   if (!dataViewStarted || !priceViewOpened) failures.push("navegação Dados/Preço não abriu as duas etapas");
+  if (!expandedDetailsContained || !expandedDetailsClearAlerts || !expandedAlertsContained) {
+    failures.push("detalhes abertos escaparam do próprio bloco ou sobrepuseram os alertas");
+  }
   if (!config.mobile && layoutMetrics.primaryColumns !== 3) {
     failures.push(`formulario desktop com ${layoutMetrics.primaryColumns} colunas`);
   }

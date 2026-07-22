@@ -262,7 +262,7 @@ function calculateQuote() {
     ["Material", materialCost],
     ["Energia", energyCost],
     ["Desgaste da impressora", machineCost],
-    ["Mao de obra", laborCost],
+    ["Mão de obra", laborCost],
     ["Embalagem, insumos e frete", packagingCost + extraSupplies + shippingCost],
     ["Reserva para repetir impressão", failureCost],
     ["Taxas/impostos", taxCost],

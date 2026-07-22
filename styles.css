@@ -2311,6 +2311,10 @@ footer strong {
     line-height: 1.25;
   }
 
+  .result-secondary .result-details[open] summary {
+    height: auto;
+  }
+
   .result-secondary:has(.result-details[open]) {
     grid-template-columns: 1fr;
   }
