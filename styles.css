@@ -647,6 +647,12 @@ h3 {
   color: var(--mint-2);
 }
 
+.new-quote-button.is-confirmed {
+  border-color: rgba(9, 168, 111, 0.62);
+  background: rgba(43, 229, 159, 0.14);
+  color: #08704e;
+}
+
 .new-quote-button span {
   font-size: 20px;
   line-height: 1;
@@ -2196,6 +2202,12 @@ footer strong {
     padding: 18px;
   }
 
+  .calculator input,
+  .calculator select,
+  .client-quote-dialog input {
+    font-size: 16px;
+  }
+
   .calculator > fieldset:first-of-type {
     margin-top: 10px;
   }
@@ -2702,7 +2714,8 @@ html[data-theme="dark"] .new-quote-button {
 }
 
 html[data-theme="dark"] .printer-presets button:hover,
-html[data-theme="dark"] .printer-presets button.is-active {
+html[data-theme="dark"] .printer-presets button.is-active,
+html[data-theme="dark"] .new-quote-button.is-confirmed {
   border-color: rgba(64, 238, 176, 0.56);
   background: rgba(64, 238, 176, 0.11);
   color: #65f0bb;

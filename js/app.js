@@ -550,11 +550,16 @@ function resetQuoteForm() {
   updatePrinterPresetState();
   calculateQuote();
 
-  const resetLabel = resetQuote.querySelector("b");
-  resetLabel.textContent = "Pronto";
-  form.elements.jobName.focus({ preventScroll: true });
+  resetQuote.classList.add("is-confirmed");
+  resetQuote.setAttribute("aria-label", "Nova cotação iniciada");
+
+  if (!window.matchMedia("(max-width: 680px)").matches) {
+    form.elements.jobName.focus({ preventScroll: true });
+  }
+
   window.setTimeout(() => {
-    resetLabel.textContent = "Nova cotação";
+    resetQuote.classList.remove("is-confirmed");
+    resetQuote.setAttribute("aria-label", "Iniciar nova cotação");
   }, 1400);
 }
 

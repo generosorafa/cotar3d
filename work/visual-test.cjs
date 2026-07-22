@@ -260,6 +260,9 @@ async function testViewport(browser, config) {
     .textContent()
     .catch(() => "");
 
+  const resetButtonWidthBefore = await page.locator("#resetQuote").evaluate((button) => {
+    return button.getBoundingClientRect().width;
+  });
   await page.locator("#resetQuote").click();
   const resetState = await page.evaluate(() => ({
     jobName: document.querySelector('[name="jobName"]').value,
@@ -268,6 +271,9 @@ async function testViewport(browser, config) {
     printHours: document.querySelector('[name="printHours"]').value,
     view: document.querySelector("#calculadora").dataset.view,
     openCostGroups: document.querySelectorAll(".cost-group[open]").length,
+    activeField: document.activeElement?.getAttribute("name") || document.activeElement?.id || "",
+    jobNameFontSize: Number.parseFloat(getComputedStyle(document.querySelector('[name="jobName"]')).fontSize),
+    resetButtonWidth: document.querySelector("#resetQuote").getBoundingClientRect().width,
   }));
 
   await page.close();
@@ -345,6 +351,15 @@ async function testViewport(browser, config) {
     resetState.openCostGroups !== 0
   ) {
     failures.push(`nova cotação não reiniciou corretamente: ${JSON.stringify(resetState)}`);
+  }
+  if (config.mobile && (resetState.activeField === "jobName" || resetState.jobNameFontSize < 16)) {
+    failures.push(`nova cotação pode acionar zoom mobile: ${JSON.stringify(resetState)}`);
+  }
+  if (!config.mobile && resetState.activeField !== "jobName") {
+    failures.push(`nova cotação não direcionou o foco no desktop: ${JSON.stringify(resetState)}`);
+  }
+  if (Math.abs(resetState.resetButtonWidth - resetButtonWidthBefore) > 1) {
+    failures.push(`botão de nova cotação alterou a largura: antes=${resetButtonWidthBefore}; depois=${resetState.resetButtonWidth}`);
   }
   if (config.mobile && (layoutMetrics.themeToggleSize < 44 || layoutMetrics.smallestNavTarget < 44)) {
     failures.push(`alvos de toque pequenos: tema=${layoutMetrics.themeToggleSize}; menu=${layoutMetrics.smallestNavTarget}`);
